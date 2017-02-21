@@ -1,9 +1,13 @@
 {
   "name": "egg-scripts",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "deploy tool for egg project",
-  "private": true,
-  "dependencies": {},
+  "bin": {
+    "egg-scripts": "bin/egg-scripts.js"
+  },
+  "dependencies": {
+    "common-bin": "^1.0.1"
+  },
   "devDependencies": {
     "autod": "^2.7.1",
     "egg-bin": "^1.10.0",
