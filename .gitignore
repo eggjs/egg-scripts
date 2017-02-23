@@ -6,4 +6,5 @@ coverage/
 run/
 .DS_Store
 *.swp
+!test/fixtures/example/node_modules
 
