@@ -7,100 +7,156 @@ const sleep = require('mz-modules/sleep');
 const rimraf = require('mz-modules/rimraf');
 const mkdirp = require('mz-modules/mkdirp');
 const coffee = require('coffee');
-const mm = require('mm');
 const homedir = require('node-homedir');
+const httpclient = require('urllib');
+const utils = require('./utils');
 
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = homedir();
+  const logDir = path.join(homePath, 'logs/example');
 
-  describe('start with no-daemon', () => {
-    let app;
-
-    after(function* () {
-      mm.restore();
-      console.log('kill by mocha after');
-      app.proc.kill('SIGTERM');
-      yield sleep(5000);
-    });
-
-    it('should start', function* () {
-      mm(process.env, 'TEST_EXIT', '15000');
-
-      app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--framework=custom-framework', '--workers=2', fixturePath ]);
-      app
-        // .debug()
-        // .coverage(false)
-        .expect('code', 0);
-
-      yield sleep('10s');
-
-      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      assert(!app.stdout.includes('exist by env'));
-      assert(app.stderr === '');
-    });
+  beforeEach(function* () {
+    yield utils.cleanup(fixturePath);
   });
 
-  describe('start at relative baseDir', () => {
-    let app;
+  describe('start --no-daemon', () => {
+    describe('full path', () => {
+      let app;
 
-    after(function* () {
-      mm.restore();
-      console.log('kill by mocha after');
-      app.proc.kill('SIGTERM');
-      yield sleep(5000);
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep('5s');
+
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      });
     });
 
-    it('should start', function* () {
-      mm(process.env, 'TEST_EXIT', '15000');
+    describe('relative path', () => {
+      let app;
 
-      app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--framework=custom-framework', '--workers=2', path.relative(process.cwd(), fixturePath) ]);
-      app
-        // .debug()
-        // .coverage(false)
-        .expect('code', 0);
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
 
-      yield sleep('10s');
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', path.relative(process.cwd(), fixturePath) ]);
+        // app.debug();
+        app.expect('code', 0);
 
-      assert(app.stdout.includes(`[egg-scripts] Starting egg application at ${fixturePath}`));
-      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      assert(!app.stdout.includes('exist by env'));
-      assert(app.stderr === '');
-    });
-  });
+        yield sleep('5s');
 
-  describe('start with --baseDir', () => {
-    let app;
-
-    after(function* () {
-      mm.restore();
-      console.log('kill by mocha after');
-      app.proc.kill('SIGTERM');
-      yield sleep(5000);
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      });
     });
 
-    it('should start', function* () {
-      mm(process.env, 'TEST_EXIT', '15000');
+    describe('--baseDir', () => {
+      let app;
 
-      app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--framework=custom-framework', '--workers=2', '--baseDir=' + path.relative(process.cwd(), fixturePath) ]);
-      app
-        // .debug()
-        // .coverage(false)
-        .expect('code', 0);
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
 
-      yield sleep('10s');
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', '--baseDir=' + path.relative(process.cwd(), fixturePath) ]);
+        // app.debug();
+        app.expect('code', 0);
 
-      assert(app.stdout.includes(`[egg-scripts] Starting egg application at ${fixturePath}`));
-      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      assert(!app.stdout.includes('exist by env'));
-      assert(app.stderr === '');
+        yield sleep('5s');
+
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      });
+    });
+
+    describe('--framework', () => {
+      let app;
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--framework=yadan', '--workers=2', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep('5s');
+
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, yadan');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
+      });
+    });
+
+    describe('--port', () => {
+      let app;
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--port=7002', '--workers=2', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep('5s');
+
+        const result = yield httpclient.request('http://127.0.0.1:7002');
+        assert(result.data.toString() === 'hi, egg');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
+      });
+    });
+
+    describe('--env', () => {
+      let app;
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--env=pre', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep('5s');
+
+        const result = yield httpclient.request('http://127.0.0.1:7001/env');
+        assert(result.data.toString() === 'pre, true');
+        assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      });
     });
   });
 
   describe('start with daemon', () => {
     let app;
-    const logDir = path.join(homePath, 'logs/example');
 
     before(function* () {
       yield rimraf(logDir);
@@ -110,62 +166,32 @@ describe('test/start.test.js', () => {
     });
 
     after(function* () {
-      mm.restore();
-      console.log('kill by mocha after');
       app.proc.kill('SIGTERM');
-      yield sleep(5000);
+      yield utils.cleanup(fixturePath);
     });
 
     it('should start', function* () {
-      mm(process.env, 'TEST_EXIT', '15000');
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+      // app.debug();
+      app.expect('code', 0);
 
-      app = coffee.fork(eggBin, [ 'start', '--framework=custom-framework', '--workers=2', fixturePath ]);
-      app
-        // .debug()
-        .coverage(false)
-        .expect('code', 0);
+      yield sleep('5s');
 
-      yield sleep('10s');
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
 
       assert(app.stdout.match(/Starting egg.*example/));
 
+      // master log
       const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
       const stderr = yield fs.readFile(path.join(logDir, 'master-stderr.log'), 'utf-8');
-      assert(stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      assert(!stdout.includes('exist by env'));
       assert(stderr === '');
+      assert(stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+
       // should rotate log
       const fileList = yield fs.readdir(logDir);
       assert(fileList.some(name => name.match(/master-stdout\.log\.\d+\.\d+/)));
       assert(fileList.some(name => name.match(/master-stderr\.log\.\d+\.\d+/)));
-    });
-  });
-
-  describe.skip('with EGG_WORKERS env', () => {
-    let app;
-
-    after(function* () {
-      mm.restore();
-      app.proc.kill('SIGTERM');
-      yield sleep(1000);
-    });
-
-    it('should start', done => {
-      mm(process.env, 'EGG_WORKERS', '2');
-      mm(process.env, 'NODE_ENV', 'development');
-      mm(process.env, 'PWD', fixturePath);
-      mm(process.env, 'HOME', process.env.PWD);
-      app = coffee.fork(eggBin, [ 'start', '--no-daemon' ]);
-      app
-        // .debug()
-        .coverage(false)
-        .expect('code', 0);
-
-      setTimeout(() => {
-        assert(app.stdout.match(/"workers":2,/));
-        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-        done();
-      }, 5000);
     });
   });
 });

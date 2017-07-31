@@ -14,11 +14,9 @@ module.exports = {
     'egg-ci',
     'egg-bin',
     'coffee',
-    'mm',
     'autod',
     'eslint',
     'eslint-config-egg',
-    'supertest',
     'webstorm-disable-index',
   ],
   exclude: [

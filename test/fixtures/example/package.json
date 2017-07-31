@@ -3,5 +3,8 @@
   "version": "1.0.0",
   "dependencies": {
     "egg": "^1.0.0"
+  },
+  "egg": {
+    "framework": "custom-framework"
   }
 }

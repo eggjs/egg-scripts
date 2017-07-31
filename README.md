@@ -1,32 +1,58 @@
 # egg-scripts
 
-deploy tool for egg project
+deploy tool for egg project.
 
-## QuickStart
+## Install
 
-<!-- add docs here for user -->
-
-see [egg docs][egg] for more detail.
-
-### Development
 ```bash
-$ npm install
-$ npm run dev
+$ npm i egg-scripts --save
 ```
 
-### Unit Test
-- [mocha], [thunk-mocha], [power-assert], [istanbul] is build-in to [egg-bin], so you can just use it.
-- [power-assert] is very powerful.
-- see [egg unit test docs](https://eggjs.org/core/unittest) for more detail.
+## Usage
 
-### npm scripts
+Add `egg-scripts` to `package.json` scripts:
 
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+```json
+{
+  "scripts": {
+    "start": "egg-scripts start",
+    "stop": "egg-scripts stop"
+  }
+}
+```
 
-[mocha]: http://mochajs.org
-[thunk-mocha]: https://npmjs.com/thunk-mocha
-[power-assert]: https://github.com/power-assert-js/power-assert
-[istanbul]: https://github.com/gotwarlost/istanbul
-[egg-bin]: https://github.com/eggjs/egg-bin
+Then run as:
+- `npm start`
+- `npm stop`
+
+**Note:** `egg-scripts` is not recommended to install global, you should install and use it as npm scripts.
+
+## Command
+
+### start
+
+Start egg at prod mode.
+
+```bash
+$ egg-scripts start [baseDir] [options]
+# Usage
+# egg-scripts start --port=7001
+```
+
+**Options:**
+
+- `baseDir` - directory of application, default to `process.cwd()`
+- `port` - listening port, default to `process.env.PORT || 7001`
+- `workers` - numbers of app workers, default to `os.cpus().length`
+- `daemon` - whether run at daemon mode, default to true, use `--no-daemon` to run at frontground.
+- `framework` - specify framework that can be absolute path or npm package, default to auto detect.
+- `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`
+
+### stop
+
+Stop egg gracefull.
+
+```bash
+# stop egg
+$ egg-scripts stop [baseDir]
+```
