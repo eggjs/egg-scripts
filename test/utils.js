@@ -22,10 +22,10 @@ exports.cleanup = function* (baseDir) {
       }
 
       try {
-        process.kill(pid, 'SIGKILL');
+        process.kill(pid, type === 'master' ? '' : 'SIGKILL');
         console.log(`cleanup ${type} ${pid}`);
       } catch (err) {
-        console.log(`cleanup ${type} ${pid} got error ${err.code || err.message}`);
+        console.log(`cleanup ${type} ${pid} got error ${err.code || err.message || err}`);
         if (err.code !== 'ESRCH') {
           throw err;
         }

@@ -24,7 +24,7 @@ describe('test/stop.test.js', () => {
     beforeEach(function* () {
       yield utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
-      app.debug();
+      // app.debug();
       app.expect('code', 0);
       yield sleep('8s');
 
@@ -40,9 +40,9 @@ describe('test/stop.test.js', () => {
     });
 
     describe('full path', () => {
-      it('should stop', function* () {
+      it.only('should stop', function* () {
         killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-        // killer.debug();
+        killer.debug();
         killer.expect('code', 0);
 
         // yield killer.end();
@@ -63,7 +63,7 @@ describe('test/stop.test.js', () => {
     describe('relative path', () => {
       it('should stop', function* () {
         killer = coffee.fork(eggBin, [ 'stop', path.relative(process.cwd(), fixturePath) ]);
-        // killer.debug();
+        killer.debug();
         killer.expect('code', 0);
 
         // yield killer.end();
@@ -84,7 +84,7 @@ describe('test/stop.test.js', () => {
     describe('without baseDir', () => {
       it('should stop', function* () {
         killer = coffee.fork(eggBin, [ 'stop' ], { cwd: fixturePath });
-        // killer.debug();
+        killer.debug();
         killer.expect('code', 0);
 
         // yield killer.end();
@@ -126,7 +126,7 @@ describe('test/stop.test.js', () => {
 
     it('should stop', function* () {
       killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-      // killer.debug();
+      killer.debug();
       killer.expect('code', 0);
 
       yield killer.end();
@@ -150,7 +150,7 @@ describe('test/stop.test.js', () => {
     it('should work', function* () {
       yield utils.cleanup(fixturePath);
       killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-      // killer.debug();
+      killer.debug();
       killer.expect('code', 0);
 
       yield sleep('5s');
