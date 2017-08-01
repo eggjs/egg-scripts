@@ -34,9 +34,10 @@ Then run as:
 Start egg at prod mode.
 
 ```bash
-$ egg-scripts start [options]
+$ egg-scripts start [baseDir] [options]
 # Usage
 # egg-scripts start --port=7001
+# egg-scripts start ./server
 ```
 
 **Options:**
@@ -54,7 +55,8 @@ Stop egg gracefull.
 
 ```bash
 # stop egg
-$ egg-scripts stop [options]
+$ egg-scripts stop [baseDir]
+# egg-scripts stop ./server
 ```
 
 **Options:**
