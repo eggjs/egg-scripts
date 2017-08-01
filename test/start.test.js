@@ -17,13 +17,13 @@ describe('test/start.test.js', () => {
   const homePath = homedir();
   const logDir = path.join(homePath, 'logs/example');
 
-  beforeEach(function* () {
-    yield utils.cleanup(fixturePath);
-  });
-
   describe('start --no-daemon', () => {
     describe('full path', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -32,20 +32,24 @@ describe('test/start.test.js', () => {
 
       it('should start', function* () {
         app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
-        // app.debug();
+        app.debug();
         app.expect('code', 0);
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7001');
-        assert(result.data.toString() === 'hi, egg');
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
       });
     });
 
     describe('relative path', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -59,15 +63,19 @@ describe('test/start.test.js', () => {
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7001');
-        assert(result.data.toString() === 'hi, egg');
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
       });
     });
 
     describe('--baseDir', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -81,15 +89,19 @@ describe('test/start.test.js', () => {
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7001');
-        assert(result.data.toString() === 'hi, egg');
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
       });
     });
 
     describe('--framework', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -103,15 +115,19 @@ describe('test/start.test.js', () => {
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7001');
-        assert(result.data.toString() === 'hi, yadan');
         assert(app.stderr === '');
         assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, yadan');
       });
     });
 
     describe('--port', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -125,15 +141,19 @@ describe('test/start.test.js', () => {
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7002');
-        assert(result.data.toString() === 'hi, egg');
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
+        const result = yield httpclient.request('http://127.0.0.1:7002');
+        assert(result.data.toString() === 'hi, egg');
       });
     });
 
     describe('--env', () => {
       let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
 
       after(function* () {
         app.proc.kill('SIGTERM');
@@ -147,10 +167,10 @@ describe('test/start.test.js', () => {
 
         yield sleep('5s');
 
-        const result = yield httpclient.request('http://127.0.0.1:7001/env');
-        assert(result.data.toString() === 'pre, true');
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001/env');
+        assert(result.data.toString() === 'pre, true');
       });
     });
   });
@@ -159,6 +179,7 @@ describe('test/start.test.js', () => {
     let app;
 
     before(function* () {
+      yield utils.cleanup(fixturePath);
       yield rimraf(logDir);
       yield mkdirp(logDir);
       yield fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
@@ -177,9 +198,6 @@ describe('test/start.test.js', () => {
 
       yield sleep('5s');
 
-      const result = yield httpclient.request('http://127.0.0.1:7001');
-      assert(result.data.toString() === 'hi, egg');
-
       assert(app.stdout.match(/Starting egg.*example/));
 
       // master log
@@ -192,6 +210,9 @@ describe('test/start.test.js', () => {
       const fileList = yield fs.readdir(logDir);
       assert(fileList.some(name => name.match(/master-stdout\.log\.\d+\.\d+/)));
       assert(fileList.some(name => name.match(/master-stderr\.log\.\d+\.\d+/)));
+
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
     });
   });
 });

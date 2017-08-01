@@ -27,15 +27,15 @@ describe('test/stop.test.js', () => {
       app.expect('code', 0);
       yield sleep('5s');
 
-      const result = yield httpclient.request('http://127.0.0.1:7001');
-      assert(result.data.toString() === 'hi, egg');
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
     });
 
     afterEach(function* () {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup();
+      yield utils.cleanup(fixturePath);
     });
 
     describe('full path', () => {
@@ -117,7 +117,7 @@ describe('test/stop.test.js', () => {
 
     after(function* () {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup();
+      yield utils.cleanup(fixturePath);
     });
 
     it('should stop', function* () {

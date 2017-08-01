@@ -4,12 +4,11 @@ const findProcess = require('find-process');
 const sleep = require('mz-modules/sleep');
 
 exports.cleanup = function* (baseDir) {
-  const pids = (yield findProcess('name', 'node'))
-    .filter(x => x.cmd.includes(`"baseDir":"${baseDir}"`))
-    .map(x => x.pid);
+  const processList = (yield findProcess('name', 'node')).filter(x => x.cmd.includes(`"baseDir":"${baseDir}"`));
+  const pids = processList.map(x => x.pid);
 
   if (pids.length) {
-    console.log('cleanup: %j', pids);
+    console.log('cleanup: %j', processList);
     for (const pid of pids) {
       try {
         process.kill(pid, 'SIGKILL');
@@ -19,6 +18,6 @@ exports.cleanup = function* (baseDir) {
         }
       }
     }
-    yield sleep(5000);
+    yield sleep('5s');
   }
 };
