@@ -15,6 +15,7 @@ describe('test/stop.test.js', () => {
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = homedir();
   const logDir = path.join(homePath, 'logs/example');
+  const waitTime = '10s';
 
   describe('stop --no-daemon', () => {
     let app;
@@ -23,9 +24,9 @@ describe('test/stop.test.js', () => {
     beforeEach(function* () {
       yield utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
-      // app.debug();
+      app.debug();
       app.expect('code', 0);
-      yield sleep('5s');
+      yield sleep('8s');
 
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -44,7 +45,8 @@ describe('test/stop.test.js', () => {
         // killer.debug();
         killer.expect('code', 0);
 
-        yield sleep('5s');
+        // yield killer.end();
+        yield sleep(waitTime);
 
         // make sure is kill not auto exist
         assert(!app.stdout.includes('exist by env'));
@@ -52,7 +54,7 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
-        assert(app.stdout.includes('[agent_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
         assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
         assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
       });
@@ -64,7 +66,8 @@ describe('test/stop.test.js', () => {
         // killer.debug();
         killer.expect('code', 0);
 
-        yield sleep('5s');
+        // yield killer.end();
+        yield sleep(waitTime);
 
         // make sure is kill not auto exist
         assert(!app.stdout.includes('exist by env'));
@@ -72,7 +75,7 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
-        assert(app.stdout.includes('[agent_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
         assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
         assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
       });
@@ -84,7 +87,8 @@ describe('test/stop.test.js', () => {
         // killer.debug();
         killer.expect('code', 0);
 
-        yield sleep('5s');
+        // yield killer.end();
+        yield sleep(waitTime);
 
         // make sure is kill not auto exist
         assert(!app.stdout.includes('exist by env'));
@@ -92,7 +96,7 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
-        assert(app.stdout.includes('[agent_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
         assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
         assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
       });
@@ -109,7 +113,7 @@ describe('test/stop.test.js', () => {
       app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
-      yield sleep('5s');
+      yield sleep('10s');
 
       const result = yield httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
@@ -125,7 +129,8 @@ describe('test/stop.test.js', () => {
       // killer.debug();
       killer.expect('code', 0);
 
-      yield sleep('5s');
+      yield killer.end();
+      yield sleep(waitTime);
 
       // master log
       const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
@@ -133,7 +138,7 @@ describe('test/stop.test.js', () => {
       assert(stdout.includes('[master] receive signal SIGTERM, closing'));
       assert(stdout.includes('[master] exit with code:0'));
       assert(stdout.includes('[app_worker] exit with code:0'));
-      assert(stdout.includes('[agent_worker] exit with code:0'));
+      // assert(stdout.includes('[agent_worker] exit with code:0'));
       assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
       assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
     });

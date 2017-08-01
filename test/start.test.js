@@ -10,12 +10,14 @@ const coffee = require('coffee');
 const homedir = require('node-homedir');
 const httpclient = require('urllib');
 const utils = require('./utils');
+// const awaitEvent = require('await-event');
 
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = homedir();
   const logDir = path.join(homePath, 'logs/example');
+  const waitTime = '10s';
 
   describe('start --no-daemon', () => {
     describe('full path', () => {
@@ -32,13 +34,29 @@ describe('test/start.test.js', () => {
 
       it('should start', function* () {
         app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
-        app.debug();
+        // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        setTimeout(() => {
+          console.log(app.proc.pid);
+          app.proc.send({
+            action: 'parent2agent',
+            data: 'parent -> agent',
+            to: 'app',
+          });
+          app.proc.on('message', msg => {
+            console.log('### parent got', msg);
+          });
+        }, 1);
+
+        yield sleep(waitTime);
+
+        // yield awaitEvent(app.proc, 'message');
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        assert(app.stdout.includes('app_worker#2:'));
+        assert(!app.stdout.includes('app_worker#3:'));
         const result = yield httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
       });
@@ -61,7 +79,7 @@ describe('test/start.test.js', () => {
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -87,7 +105,7 @@ describe('test/start.test.js', () => {
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -113,7 +131,7 @@ describe('test/start.test.js', () => {
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
@@ -139,7 +157,7 @@ describe('test/start.test.js', () => {
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
@@ -162,10 +180,10 @@ describe('test/start.test.js', () => {
 
       it('should start', function* () {
         app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ], { env: Object.assign({}, process.env, { PORT: 7002 }) });
-        app.debug();
+        // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
@@ -187,11 +205,11 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--env=pre', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', '--env=pre', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('5s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -222,7 +240,7 @@ describe('test/start.test.js', () => {
       // app.debug();
       app.expect('code', 0);
 
-      yield sleep('5s');
+      yield sleep(waitTime);
 
       assert(app.stdout.match(/Starting egg.*example/));
 

@@ -13,7 +13,6 @@ module.exports = {
     'egg',
     'egg-ci',
     'egg-bin',
-    'coffee',
     'autod',
     'eslint',
     'eslint-config-egg',
@@ -23,5 +22,4 @@ module.exports = {
     './test/fixtures',
     './dist',
   ],
-  registry: 'https://r.cnpmjs.org',
 };
