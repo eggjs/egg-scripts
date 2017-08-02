@@ -18,7 +18,7 @@ describe('test/start.test.js', () => {
   const logDir = path.join(homePath, 'logs/example');
   const waitTime = '10s';
 
-  describe('start --no-daemon', () => {
+  describe('start without daemon', () => {
     describe('full path', () => {
       let app;
 
@@ -32,7 +32,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
@@ -60,7 +60,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', path.relative(process.cwd(), fixturePath) ]);
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', path.relative(process.cwd(), fixturePath) ]);
         // app.debug();
         app.expect('code', 0);
 
@@ -86,7 +86,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2' ], { cwd: fixturePath });
+        app = coffee.fork(eggBin, [ 'start', '--workers=2' ], { cwd: fixturePath });
         // app.debug();
         app.expect('code', 0);
 
@@ -112,7 +112,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--framework=yadan', '--workers=2', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--framework=yadan', '--workers=2', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
@@ -138,7 +138,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--port=7002', '--workers=2', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--port=7002', '--workers=2', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
@@ -164,7 +164,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ], { env: Object.assign({}, process.env, { PORT: 7002 }) });
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ], { env: Object.assign({}, process.env, { PORT: 7002 }) });
         // app.debug();
         app.expect('code', 0);
 
@@ -190,7 +190,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', '--env=pre', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', '--env=pre', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
@@ -221,7 +221,7 @@ describe('test/start.test.js', () => {
     });
 
     it('should start', function* () {
-      app = coffee.fork(eggBin, [ 'start', '--workers=2', '--port=7002', fixturePath ]);
+      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
 

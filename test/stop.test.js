@@ -17,13 +17,13 @@ describe('test/stop.test.js', () => {
   const logDir = path.join(homePath, 'logs/example');
   const waitTime = '10s';
 
-  describe('stop --no-daemon', () => {
+  describe('stop without daemon', () => {
     let app;
     let killer;
 
     beforeEach(function* () {
       yield utils.cleanup(fixturePath);
-      app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
       yield sleep(waitTime);
@@ -110,7 +110,7 @@ describe('test/stop.test.js', () => {
     before(function* () {
       yield utils.cleanup(fixturePath);
       yield rimraf(logDir);
-      app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
       yield sleep('10s');

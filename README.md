@@ -15,7 +15,7 @@ Add `egg-scripts` to `package.json` scripts:
 ```json
 {
   "scripts": {
-    "start": "egg-scripts start",
+    "start": "egg-scripts start --daemon",
     "stop": "egg-scripts stop"
   }
 }
@@ -46,7 +46,7 @@ $ egg-scripts start [options] [baseDir]
   - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
   - `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
-  - `daemon` - whether run at daemon mode, default to true, use `--no-daemon` to run at foreground.
+  - `daemon` - whether run at background daemon mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
   - `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`.
 
