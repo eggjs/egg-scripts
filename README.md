@@ -40,15 +40,15 @@ $ egg-scripts start [options] [baseDir]
 # egg-scripts start ./server
 ```
 
-**Options:**
-
-- `baseDir` - directory of application, default to `process.cwd()`.
-- `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
-- `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
-- `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
-- `daemon` - whether run at daemon mode, default to true, use `--no-daemon` to run at foreground.
-- `framework` - specify framework that can be absolute path or npm package, default to auto detect.
-- `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`.
+- **Arguments**
+  - `baseDir` - directory of application, default to `process.cwd()`.
+- **Options**
+  - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
+  - `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
+  - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
+  - `daemon` - whether run at daemon mode, default to true, use `--no-daemon` to run at foreground.
+  - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
+  - `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`.
 
 ### stop
 
@@ -62,6 +62,5 @@ $ egg-scripts stop [baseDir]
 # egg-scripts stop ./server
 ```
 
-**Options:**
-
-- `baseDir` - directory of application, default to `process.cwd()`
+- **Arguments**
+  - `baseDir` - directory of application, default to `process.cwd()`.
