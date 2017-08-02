@@ -1,49 +1,63 @@
 {
   "name": "egg-scripts",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "deploy tool for egg project",
-  "private": true,
-  "dependencies": {},
+  "main": "index.js",
+  "bin": {
+    "egg-scripts": "bin/egg-scripts.js"
+  },
+  "dependencies": {
+    "common-bin": "^2.4.0",
+    "egg-utils": "^2.2.0",
+    "find-process": "^1.1.0",
+    "moment": "^2.18.1",
+    "mz": "^2.6.0",
+    "mz-modules": "^1.0.0",
+    "node-homedir": "^1.0.0",
+    "runscript": "^1.3.0",
+    "zlogger": "^1.1.0"
+  },
   "devDependencies": {
-    "autod": "^2.7.1",
-    "egg-bin": "^1.10.0",
-    "egg-ci": "^1.1.0",
-    "egg-mock": "^2.0.0",
-    "eslint": "^3.13.1",
-    "eslint-config-egg": "^3.2.0",
-    "supertest": "^2.0.1",
-    "webstorm-disable-index": "^1.1.2"
+    "autod": "^2.9.0",
+    "await-event": "^2.1.0",
+    "coffee": "^4.1.0",
+    "egg": "^1.7.0",
+    "egg-bin": "^4.1.0",
+    "egg-ci": "^1.8.0",
+    "eslint": "^4.3.0",
+    "eslint-config-egg": "^5.0.0",
+    "fkill": "^5.0.0",
+    "mz-modules": "^1.0.0",
+    "urllib": "^2.24.0",
+    "webstorm-disable-index": "^1.2.0"
   },
   "engines": {
     "node": ">=6.0.0"
   },
   "scripts": {
-    "start": "node index.js",
-    "dev": "egg-bin dev",
     "test": "npm run lint -- --fix && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
     "lint": "eslint .",
-    "ci": "npm run lint && npm run cov",
+    "ci": "egg-bin pkgfiles --check && npm run lint && npm run cov",
     "autod": "autod"
   },
+  "files": [
+    "index.js",
+    "lib",
+    "bin"
+  ],
   "ci": {
-    "version": "6, 7"
+    "version": "6, 8"
   },
+  "bug": {
+    "url": "https://github.com/eggjs/egg/issues"
+  },
+  "homepage": "https://github.com/eggjs/egg-scripts",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:eggjs/egg-scripts.git"
   },
   "author": "TZ <atian25@qq.com>",
-  "license": "MIT",
-  "boilerplate": {
-    "name": "egg-boilerplate-empty",
-    "version": "2.0.0",
-    "description": "only init basic stuff, such as eslint / test / ci ... ",
-    "repository": {
-      "type": "git",
-      "url": "git@github.com:eggjs/egg-boilerplate-empty.git"
-    },
-    "homepage": "https://github.com/eggjs/egg-boilerplate-empty"
-  }
+  "license": "MIT"
 }

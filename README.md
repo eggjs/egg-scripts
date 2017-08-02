@@ -1,32 +1,66 @@
 # egg-scripts
 
-deploy tool for egg project
+deploy tool for egg project.
 
-## QuickStart
+## Install
 
-<!-- add docs here for user -->
-
-see [egg docs][egg] for more detail.
-
-### Development
 ```bash
-$ npm install
-$ npm run dev
+$ npm i egg-scripts --save
 ```
 
-### Unit Test
-- [mocha], [thunk-mocha], [power-assert], [istanbul] is build-in to [egg-bin], so you can just use it.
-- [power-assert] is very powerful.
-- see [egg unit test docs](https://eggjs.org/core/unittest) for more detail.
+## Usage
 
-### npm scripts
+Add `egg-scripts` to `package.json` scripts:
 
-- Use `npm run lint` to check code style.
-- Use `npm test` to run unit test.
-- Use `npm run autod` to auto detect dependencies upgrade, see [autod](https://www.npmjs.com/package/autod) for more detail.
+```json
+{
+  "scripts": {
+    "start": "egg-scripts start --daemon",
+    "stop": "egg-scripts stop"
+  }
+}
+```
 
-[mocha]: http://mochajs.org
-[thunk-mocha]: https://npmjs.com/thunk-mocha
-[power-assert]: https://github.com/power-assert-js/power-assert
-[istanbul]: https://github.com/gotwarlost/istanbul
-[egg-bin]: https://github.com/eggjs/egg-bin
+Then run as:
+- `npm start`
+- `npm stop`
+
+**Note:** `egg-scripts` is not recommended to install global, you should install and use it as npm scripts.
+
+## Command
+
+### start
+
+Start egg at prod mode.
+
+```bash
+$ egg-scripts start [options] [baseDir]
+# Usage
+# egg-scripts start --port=7001
+# egg-scripts start ./server
+```
+
+- **Arguments**
+  - `baseDir` - directory of application, default to `process.cwd()`.
+- **Options**
+  - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
+  - `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
+  - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
+  - `daemon` - whether run at background daemon mode.
+  - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
+  - `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`.
+
+### stop
+
+Stop egg gracefull.
+
+**Note: ** Windows is not supported, try to kill master process which command contains `start-cluster` or `--type=egg-server` yourself, good luck.
+
+```bash
+# stop egg
+$ egg-scripts stop [baseDir]
+# egg-scripts stop ./server
+```
+
+- **Arguments**
+  - `baseDir` - directory of application, default to `process.cwd()`.
