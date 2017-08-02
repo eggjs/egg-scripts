@@ -26,7 +26,7 @@ describe('test/stop.test.js', () => {
       app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
-      yield sleep('8s');
+      yield sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -40,7 +40,7 @@ describe('test/stop.test.js', () => {
     });
 
     describe('full path', () => {
-      it.only('should stop', function* () {
+      it('should stop', function* () {
         killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
         killer.debug();
         killer.expect('code', 0);

@@ -10,7 +10,6 @@ const coffee = require('coffee');
 const homedir = require('node-homedir');
 const httpclient = require('urllib');
 const utils = require('./utils');
-// const awaitEvent = require('await-event');
 
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
@@ -34,26 +33,12 @@ describe('test/start.test.js', () => {
 
       it('should start', function* () {
         app = coffee.fork(eggBin, [ 'start', '--no-daemon', '--workers=2', fixturePath ]);
-        app.debug();
+        // app.debug();
         app.expect('code', 0);
-
-        setTimeout(() => {
-          console.log('###', app.proc.pid);
-          app.proc.on('message', msg => {
-            console.log('### parent got', msg);
-          });
-          app.proc.send({
-            action: 'parent2app',
-            data: '### parent -> app',
-            to: 'app',
-          });
-        }, 1);
 
         yield sleep('15s');
 
-        // yield awaitEvent(app.proc, 'message');
-
-        // assert(app.stderr === '');
+        assert(app.stderr === '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         assert(app.stdout.includes('app_worker#2:'));
         assert(!app.stdout.includes('app_worker#3:'));

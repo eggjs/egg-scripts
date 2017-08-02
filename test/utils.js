@@ -1,11 +1,10 @@
 'use strict';
 
-const findProcess = require('find-process');
+const helper = require('../lib/helper');
 const sleep = require('mz-modules/sleep');
 
 exports.cleanup = function* (baseDir) {
-  let processList = yield findProcess('name', 'node');
-  processList = processList.filter(x => x.cmd.includes(`"baseDir":"${baseDir}"`));
+  const processList = yield helper.findNodeProcess(x => x.cmd.includes(`"baseDir":"${baseDir}"`));
 
   if (processList.length) {
     console.log(`cleanup: ${processList.length} to kill`);
