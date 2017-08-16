@@ -48,13 +48,13 @@ $ egg-scripts start [options] [baseDir]
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
   - `daemon` - whether run at background daemon mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
-  - `env` - egg server env, default to `process.env.EGG_SERVER_ENV || prod`.
+  - `env` - egg server env, default to `process.env.EGG_SERVER_ENV`, recommended to keep empty then use framwork default env.
 
 ### stop
 
 Stop egg gracefull.
 
-**Note: ** Windows is not supported, try to kill master process which command contains `start-cluster` or `--type=egg-server` yourself, good luck.
+**Note:** Windows is not supported yet, try to kill master process which command contains `start-cluster` or `--type=egg-server` yourself, good luck.
 
 ```bash
 # stop egg

@@ -7,7 +7,7 @@
     "egg-scripts": "bin/egg-scripts.js"
   },
   "dependencies": {
-    "common-bin": "^2.4.0",
+    "common-bin": "^2.5.0",
     "egg-utils": "^2.2.0",
     "moment": "^2.18.1",
     "mz": "^2.6.0",
@@ -22,8 +22,9 @@
     "egg": "^1.7.0",
     "egg-bin": "^4.1.0",
     "egg-ci": "^1.8.0",
-    "eslint": "^4.3.0",
+    "eslint": "^4.4.1",
     "eslint-config-egg": "^5.0.0",
+    "mm": "^2.1.0",
     "urllib": "^2.24.0",
     "webstorm-disable-index": "^1.2.0"
   },

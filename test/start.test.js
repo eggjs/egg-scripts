@@ -9,6 +9,7 @@ const mkdirp = require('mz-modules/mkdirp');
 const coffee = require('coffee');
 const homedir = require('node-homedir');
 const httpclient = require('urllib');
+const mm = require('mm');
 const utils = require('./utils');
 
 describe('test/start.test.js', () => {
@@ -17,6 +18,8 @@ describe('test/start.test.js', () => {
   const homePath = homedir();
   const logDir = path.join(homePath, 'logs/example');
   const waitTime = '10s';
+
+  afterEach(() => mm.restore);
 
   describe('start without daemon', () => {
     describe('full path', () => {
@@ -197,6 +200,34 @@ describe('test/start.test.js', () => {
         yield sleep(waitTime);
 
         assert(app.stderr === '');
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001/env');
+        assert(result.data.toString() === 'pre, true');
+      });
+    });
+
+    describe('custom env', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        mm(process.env, 'CUSTOM_ENV', 'pre');
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.includes('## CUSTOM_ENV: pre'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
