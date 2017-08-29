@@ -39,9 +39,11 @@ describe('test/start.test.js', () => {
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep('15s');
+        yield sleep(waitTime);
 
         assert(app.stderr === '');
+        assert(app.stdout.includes('--title=egg-server-example'));
+        assert(app.stdout.includes('"title":"egg-server-example"'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         assert(app.stdout.includes('app_worker#2:'));
         assert(!app.stdout.includes('app_worker#3:'));
@@ -125,6 +127,36 @@ describe('test/start.test.js', () => {
         assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
         const result = yield httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, yadan');
+      });
+    });
+
+    describe('--title', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=egg-test', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.includes('--title=egg-test'));
+        assert(app.stdout.includes('"title":"egg-test"'));
+        assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        assert(app.stdout.includes('app_worker#2:'));
+        assert(!app.stdout.includes('app_worker#3:'));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
       });
     });
 
