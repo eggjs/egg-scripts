@@ -253,12 +253,13 @@ describe('test/start.test.js', () => {
       it('should start', function* () {
         mm(process.env, 'CUSTOM_ENV', 'pre');
         app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
-        app.debug();
+        // app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
 
         assert(app.stderr === '');
+        assert(app.stdout.includes('## EGG_SERVER_ENV === undefined: true'));
         assert(app.stdout.includes('## CUSTOM_ENV: pre'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = yield httpclient.request('http://127.0.0.1:7001/env');
