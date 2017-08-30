@@ -266,6 +266,34 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'pre, true');
       });
     });
+
+    describe('read cluster config', () => {
+      let app;
+      const fixturePath = path.join(__dirname, 'fixtures/cluster-config');
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:8000/));
+        assert(!app.stdout.includes('app_worker#3:'));
+        const result = yield httpclient.request('http://127.0.0.1:8000');
+        assert(result.data.toString() === 'hi, egg');
+      });
+    });
   });
 
   describe('start with daemon', () => {
