@@ -1,4 +1,10 @@
 
+1.1.2 / 2017-09-01
+==================
+
+  * fix: should not pass undefined env (#6)
+  * docs: fix stop typo (#5)
+
 1.1.1 / 2017-08-29
 ==================
 
