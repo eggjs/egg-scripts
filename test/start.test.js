@@ -259,7 +259,7 @@ describe('test/start.test.js', () => {
         yield sleep(waitTime);
 
         assert(app.stderr === '');
-        assert(app.stdout.includes('## EGG_SERVER_ENV === undefined: true'));
+        assert(app.stdout.includes('## EGG_SERVER_ENV is not pass'));
         assert(app.stdout.includes('## CUSTOM_ENV: pre'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = yield httpclient.request('http://127.0.0.1:7001/env');
