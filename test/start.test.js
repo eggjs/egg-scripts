@@ -291,8 +291,8 @@ describe('test/start.test.js', () => {
 
       yield sleep(waitTime);
 
-      assert(app.stdout.match(/Starting egg.*example/));
-      assert(app.stdout.match(/egg start success/));
+      assert(app.stdout.match(/starting egg.*example/));
+      assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7002/));
 
       // master log
       const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
