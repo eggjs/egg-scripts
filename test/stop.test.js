@@ -55,8 +55,8 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
+        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
       });
     });
 
@@ -76,8 +76,8 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
+        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
       });
     });
 
@@ -97,8 +97,8 @@ describe('test/stop.test.js', () => {
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
+        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
       });
     });
   });
@@ -139,8 +139,8 @@ describe('test/stop.test.js', () => {
       assert(stdout.includes('[master] exit with code:0'));
       assert(stdout.includes('[app_worker] exit with code:0'));
       // assert(stdout.includes('[agent_worker] exit with code:0'));
-      assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
-      assert(killer.stdout.match(/Got master pid \["\d+\"\]/i));
+      assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+      assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
     });
   });
 
@@ -155,7 +155,7 @@ describe('test/stop.test.js', () => {
 
       yield sleep('5s');
 
-      assert(killer.stdout.includes(`[egg-scripts] Stopping egg application at ${fixturePath}`));
+      assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
       assert(killer.stderr.includes('can\'t detect any running egg process'));
     });
   });
