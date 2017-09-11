@@ -1,4 +1,13 @@
 
+1.2.0 / 2017-09-11
+==================
+
+**features**
+  * [[`c0300b8`](http://github.com/eggjs/egg-scripts/commit/c0300b8c657fe4f75ca388061f6cb3de9864a743)] - feat: log success at daemon mode (#7) (TZ | 天猪 <<atian25@qq.com>>)
+
+**others**
+  * [[`fdd273c`](http://github.com/eggjs/egg-scripts/commit/fdd273c2d6f15d104288fef4d699627a7cf701d9)] - test: add cluster-config fixture (#4) (TZ | 天猪 <<atian25@qq.com>>)
+
 1.1.2 / 2017-09-01
 ==================
 
