@@ -54,8 +54,6 @@ $ egg-scripts start [options] [baseDir]
 
 Stop egg gracefull.
 
-**Note:** **Windows is not supported yet**, try to kill master process which command contains `start-cluster` or `--title=egg-server` yourself, good luck.
-
 ```bash
 # stop egg
 $ egg-scripts stop [baseDir]

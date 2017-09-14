@@ -40,7 +40,7 @@ describe('test/stop.test.js', () => {
     });
 
     describe('full path', () => {
-      it('should stop', function* () {
+      it.only('should stop', function* () {
         killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
         killer.debug();
         killer.expect('code', 0);
