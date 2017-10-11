@@ -14,7 +14,7 @@ describe('test/stop.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = homedir();
-  const logDir = path.join(homePath, 'logs/example');
+  const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
 
   describe('stop without daemon', () => {
