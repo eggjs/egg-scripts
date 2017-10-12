@@ -25,7 +25,7 @@ describe('test/start.test.js', () => {
     yield rimraf(homePath);
   });
   beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
-  afterEach(() => mm.restore);
+  afterEach(mm.restore);
 
   describe('start without daemon', () => {
     describe('full path', () => {
@@ -403,19 +403,19 @@ describe('test/start.test.js', () => {
       const stderr = path.join(homePath, 'logs/master-stderr.log');
 
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
-        .debug()
+        // .debug()
         .expect('stderr', /nodejs.Error: error message/)
         .expect('stderr', new RegExp(`Start failed, see ${stderr}`))
         .expect('code', 1)
         .end();
     });
 
-    it('should status check timeout and exit with code 1', function* () {
+    it.only('should status check timeout and exit with code 1', function* () {
       mm(process.env, 'WAIT_TIME', 10000);
 
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5' ], { cwd })
-        .debug()
-        .expect('stdout', /Wait Start: 5.../)
+        // .debug()
+        .expect('stdout', /Wait Start: 1.../)
         .expect('stderr', /Start failed, 5s timeout/)
         .expect('code', 1)
         .end();
