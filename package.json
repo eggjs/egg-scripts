@@ -32,11 +32,12 @@
     "node": ">=6.0.0"
   },
   "scripts": {
-    "test": "npm run lint -- --fix && npm run test-local",
+    "pkgfiles": "egg-bin pkgfiles",
+    "test": "npm run lint -- --fix && npm run pkgfiles && npm run test-local",
     "test-local": "egg-bin test",
     "cov": "egg-bin cov",
     "lint": "eslint .",
-    "ci": "egg-bin pkgfiles -- --check && npm run lint && npm run cov",
+    "ci": "npm run pkgfiles -- --check && npm run lint && npm run cov",
     "autod": "autod"
   },
   "files": [

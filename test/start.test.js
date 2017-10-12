@@ -265,7 +265,7 @@ describe('test/start.test.js', () => {
         let result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
         result = yield httpclient.request('http://127.0.0.1:7001/path');
-        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin:`)));
+        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
       });
     });
 
