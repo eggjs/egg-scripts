@@ -403,7 +403,7 @@ describe('test/start.test.js', () => {
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
         // .debug()
         .expect('stdout', /Wait Start: 5.../)
-        .expect('stdout', /egg started on http:\/\/127.0.0.1:7001/)
+        .expect('stdout', /custom-framework started/)
         .expect('code', 0)
         .end();
     });

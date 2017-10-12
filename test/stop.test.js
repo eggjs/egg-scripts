@@ -114,32 +114,29 @@ describe('test/stop.test.js', () => {
   });
 
   describe('stop with daemon', () => {
-    let app;
-    let killer;
-
-    before(function* () {
+    beforeEach(function* () {
       yield utils.cleanup(fixturePath);
       yield rimraf(logDir);
-      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ]);
-      // app.debug();
-      app.expect('code', 0);
-      yield sleep('10s');
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ])
+        .debug()
+        .expect('code', 0)
+        .end();
 
       const result = yield httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
-
-    after(function* () {
-      app.proc.kill('SIGTERM');
+    afterEach(function* () {
       yield utils.cleanup(fixturePath);
     });
 
     it('should stop', function* () {
-      killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-      killer.debug();
-      killer.expect('code', 0);
+      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+        .debug()
+        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
+        .expect('stdout', /got master pid \["\d+\"\]/i)
+        .expect('code', 0)
+        .end();
 
-      yield killer.end();
       yield sleep(waitTime);
 
       // master log
@@ -148,25 +145,24 @@ describe('test/stop.test.js', () => {
       assert(stdout.includes('[master] receive signal SIGTERM, closing'));
       assert(stdout.includes('[master] exit with code:0'));
       assert(stdout.includes('[app_worker] exit with code:0'));
-      // assert(stdout.includes('[agent_worker] exit with code:0'));
-      assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-      assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+
+      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+        .debug()
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
     });
   });
 
   describe('stop with not exist', () => {
-    let killer;
-
     it('should work', function* () {
       yield utils.cleanup(fixturePath);
-      killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-      killer.debug();
-      killer.expect('code', 0);
-
-      yield sleep('5s');
-
-      assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-      assert(killer.stderr.includes('can\'t detect any running egg process'));
+      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+        .debug()
+        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
     });
   });
 });
