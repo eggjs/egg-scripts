@@ -7,7 +7,6 @@ const sleep = require('mz-modules/sleep');
 const rimraf = require('mz-modules/rimraf');
 const mkdirp = require('mz-modules/mkdirp');
 const coffee = require('coffee');
-const homedir = require('node-homedir');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
@@ -15,10 +14,17 @@ const utils = require('./utils');
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
-  const homePath = homedir();
-  const logDir = path.join(homePath, 'logs/example');
+  const homePath = path.join(__dirname, 'fixtures/home');
+  const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
 
+  before(function* () {
+    yield mkdirp(homePath);
+  });
+  after(function* () {
+    yield rimraf(homePath);
+  });
+  beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
   afterEach(() => mm.restore);
 
   describe('start without daemon', () => {
@@ -262,8 +268,43 @@ describe('test/start.test.js', () => {
         assert(app.stdout.includes('## EGG_SERVER_ENV is not pass'));
         assert(app.stdout.includes('## CUSTOM_ENV: pre'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-        const result = yield httpclient.request('http://127.0.0.1:7001/env');
+        let result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
+        result = yield httpclient.request('http://127.0.0.1:7001/path');
+        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
+      });
+    });
+
+    describe('--stdout --stderr', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+        yield rimraf(logDir);
+        yield mkdirp(logDir);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+        yield rimraf(path.join(fixturePath, 'stdout.log'));
+        yield rimraf(path.join(fixturePath, 'stderr.log'));
+      });
+
+      it('should start', function* () {
+        const stdout = path.join(fixturePath, 'stdout.log');
+        const stderr = path.join(fixturePath, 'stderr.log');
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', '--daemon', `--stdout=${stdout}`, `--stderr=${stderr}`, fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        let content = yield fs.readFile(stdout, 'utf-8');
+        assert(content.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+
+        content = yield fs.readFile(stderr, 'utf-8');
+        assert(content === '');
       });
     });
 
@@ -337,4 +378,5 @@ describe('test/start.test.js', () => {
       assert(result.data.toString() === 'hi, egg');
     });
   });
+
 });
