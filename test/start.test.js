@@ -338,25 +338,27 @@ describe('test/start.test.js', () => {
   });
 
   describe('start with daemon', () => {
-    before(function* () {
-      yield utils.cleanup(fixturePath);
+    let cwd;
+    beforeEach(function* () {
+      yield utils.cleanup(cwd);
       yield rimraf(logDir);
       yield mkdirp(logDir);
       yield fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
       yield fs.writeFile(path.join(logDir, 'master-stderr.log'), 'just for test');
     });
-    after(function* () {
-      yield coffee.fork(eggBin, [ 'stop' ])
-        // .debug()
+    afterEach(function* () {
+      yield coffee.fork(eggBin, [ 'stop', cwd ])
+        .debug()
         .end();
-      yield utils.cleanup(fixturePath);
+      yield utils.cleanup(cwd);
     });
 
-    it('should start', function* () {
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', fixturePath ])
-        .debug()
-        .expect('stdout', /Starting egg.*example/)
-        .expect('stdout', /egg started on http:\/\/127\.0\.0\.1:7002/)
+    it('should start custom-framework', function* () {
+      cwd = fixturePath;
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', cwd ])
+        // .debug()
+        .expect('stdout', /Starting custom-framework application/)
+        .expect('stdout', /custom-framework started on http:\/\/127\.0\.0\.1:7002/)
         .expect('code', 0)
         .end();
 
@@ -374,13 +376,23 @@ describe('test/start.test.js', () => {
       const result = yield httpclient.request('http://127.0.0.1:7002');
       assert(result.data.toString() === 'hi, egg');
     });
+
+    it('should start default egg', function* () {
+      cwd = path.join(__dirname, 'fixtures/egg-app');
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', cwd ])
+        .debug()
+        .expect('stdout', /Starting egg application/)
+        .expect('stdout', /egg started on http:\/\/127\.0\.0\.1:7001/)
+        .expect('code', 0)
+        .end();
+    });
   });
 
   describe('check status', () => {
     const cwd = path.join(__dirname, 'fixtures/status');
 
     after(function* () {
-      yield coffee.fork(eggBin, [ 'stop' ])
+      yield coffee.fork(eggBin, [ 'stop', cwd ])
         // .debug()
         .end();
       yield utils.cleanup(cwd);
