@@ -410,7 +410,7 @@ describe('test/start.test.js', () => {
         .end();
     });
 
-    it.only('should status check timeout and exit with code 1', function* () {
+    it('should status check timeout and exit with code 1', function* () {
       mm(process.env, 'WAIT_TIME', 10000);
 
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5' ], { cwd })
