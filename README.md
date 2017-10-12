@@ -2,6 +2,8 @@
 
 deploy tool for egg project.
 
+**Note: Windows is not supported**
+
 ## Install
 
 ```bash
@@ -53,8 +55,6 @@ $ egg-scripts start [options] [baseDir]
 ### stop
 
 Stop egg gracefull.
-
-**Note:** **Windows is not supported yet**, try to kill master process which command contains `start-cluster` or `--title=egg-server` yourself, good luck.
 
 ```bash
 # stop egg
