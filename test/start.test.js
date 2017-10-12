@@ -7,7 +7,6 @@ const sleep = require('mz-modules/sleep');
 const rimraf = require('mz-modules/rimraf');
 const mkdirp = require('mz-modules/mkdirp');
 const coffee = require('coffee');
-const homedir = require('node-homedir');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
@@ -15,10 +14,17 @@ const utils = require('./utils');
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
-  const homePath = homedir();
+  const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
 
+  before(function* () {
+    yield mkdirp(homePath);
+  });
+  after(function* () {
+    yield rimraf(homePath);
+  });
+  beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
   afterEach(() => mm.restore);
 
   describe('start without daemon', () => {
