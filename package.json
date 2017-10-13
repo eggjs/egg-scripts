@@ -4,7 +4,8 @@
   "description": "deploy tool for egg project",
   "main": "index.js",
   "bin": {
-    "egg-scripts": "bin/egg-scripts.js"
+    "egg-scripts": "bin/egg-scripts.js",
+    "eggctl": "bin/egg-scripts.js"
   },
   "dependencies": {
     "common-bin": "^2.7.1",
