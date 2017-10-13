@@ -25,7 +25,7 @@ describe('test/start.test.js', () => {
     yield rimraf(homePath);
   });
   beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
-  afterEach(() => mm.restore);
+  afterEach(mm.restore);
 
   describe('start without daemon', () => {
     describe('full path', () => {
@@ -338,30 +338,29 @@ describe('test/start.test.js', () => {
   });
 
   describe('start with daemon', () => {
-    let app;
-
-    before(function* () {
-      yield utils.cleanup(fixturePath);
+    let cwd;
+    beforeEach(function* () {
+      yield utils.cleanup(cwd);
       yield rimraf(logDir);
       yield mkdirp(logDir);
       yield fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
       yield fs.writeFile(path.join(logDir, 'master-stderr.log'), 'just for test');
     });
-
-    after(function* () {
-      app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+    afterEach(function* () {
+      yield coffee.fork(eggBin, [ 'stop', cwd ])
+        .debug()
+        .end();
+      yield utils.cleanup(cwd);
     });
 
-    it('should start', function* () {
-      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', fixturePath ]);
-      // app.debug();
-      app.expect('code', 0);
-
-      yield sleep(waitTime);
-
-      assert(app.stdout.match(/starting egg.*example/));
-      assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7002/));
+    it('should start custom-framework', function* () {
+      cwd = fixturePath;
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', cwd ])
+        // .debug()
+        .expect('stdout', /Starting custom-framework application/)
+        .expect('stdout', /custom-framework started on http:\/\/127\.0\.0\.1:7002/)
+        .expect('code', 0)
+        .end();
 
       // master log
       const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
@@ -377,6 +376,62 @@ describe('test/start.test.js', () => {
       const result = yield httpclient.request('http://127.0.0.1:7002');
       assert(result.data.toString() === 'hi, egg');
     });
+
+    it('should start default egg', function* () {
+      cwd = path.join(__dirname, 'fixtures/egg-app');
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', cwd ])
+        .debug()
+        .expect('stdout', /Starting egg application/)
+        .expect('stdout', /egg started on http:\/\/127\.0\.0\.1:7001/)
+        .expect('code', 0)
+        .end();
+    });
   });
 
+  describe('check status', () => {
+    const cwd = path.join(__dirname, 'fixtures/status');
+
+    after(function* () {
+      yield coffee.fork(eggBin, [ 'stop', cwd ])
+        // .debug()
+        .end();
+      yield utils.cleanup(cwd);
+    });
+
+    it('should status check success, exit with 0', function* () {
+      mm(process.env, 'WAIT_TIME', 5000);
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
+        // .debug()
+        .expect('stdout', /Wait Start: 5.../)
+        .expect('stdout', /custom-framework started/)
+        .expect('code', 0)
+        .end();
+    });
+
+    it('should status check fail, exit with 1', function* () {
+      mm(process.env, 'WAIT_TIME', 5000);
+      mm(process.env, 'ERROR', 'error message');
+
+      const stderr = path.join(homePath, 'logs/master-stderr.log');
+
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
+        // .debug()
+        .expect('stderr', /nodejs.Error: error message/)
+        .expect('stderr', new RegExp(`Start failed, see ${stderr}`))
+        .expect('code', 1)
+        .end();
+    });
+
+    it('should status check timeout and exit with code 1', function* () {
+      mm(process.env, 'WAIT_TIME', 10000);
+
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5000' ], { cwd })
+        // .debug()
+        .expect('stdout', /Wait Start: 1.../)
+        .expect('stderr', /Start failed, 5s timeout/)
+        .expect('code', 1)
+        .end();
+    });
+
+  });
 });
