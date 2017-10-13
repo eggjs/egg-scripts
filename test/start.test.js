@@ -425,7 +425,7 @@ describe('test/start.test.js', () => {
     it('should status check timeout and exit with code 1', function* () {
       mm(process.env, 'WAIT_TIME', 10000);
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5' ], { cwd })
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5000' ], { cwd })
         // .debug()
         .expect('stdout', /Wait Start: 1.../)
         .expect('stderr', /Start failed, 5s timeout/)
