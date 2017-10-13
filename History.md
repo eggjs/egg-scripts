@@ -1,4 +1,13 @@
 
+2.0.0 / 2017-10-13
+==================
+
+**features**
+  * [[`0f7ca50`](http://github.com/eggjs/egg-scripts/commit/0f7ca502999c06a9cb05d8e5617f6045704511df)] - feat: [BREAKING_CHANGE] check the status of app when start on daemon (#9) (Haoliang Gao <<sakura9515@gmail.com>>)
+
+**others**
+  * [[`cfd0d2f`](http://github.com/eggjs/egg-scripts/commit/cfd0d2f67845fffb9d5974514b65e43b22ed8040)] - refactor: modify the directory of logDir (#8) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 1.2.0 / 2017-09-11
 ==================
 
