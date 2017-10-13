@@ -55,18 +55,6 @@ $ eggctl start [options] [baseDir]
   - `stderr` - customize stderr file, default to `$HOME/logs/master-stderr.log`.
   - `timeout` - the maximum timeout when app starts, default to 300s.
 
-  stdout: {
-    description: 'A file that stdout redirect to',
-    type: 'string',
-  },
-  stderr: {
-    description: 'A file that stderr redirect to',
-    type: 'string',
-  },
-  timeout: {
-    description: 'a timeout for start when daemon',
-    type: 'number',
-    default: 300 * 1000,
 ### stop
 
 Stop egg gracefull.
