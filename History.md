@@ -1,4 +1,10 @@
 
+2.1.0 / 2017-10-16
+==================
+
+**features**
+  * [[`ac40135`](http://github.com/eggjs/egg-scripts/commit/ac40135d5b9a3200ea1bdfdb19d0f7e12d0c511a)] - feat: add eggctl bin (#10) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.0.0 / 2017-10-13
 ==================
 
