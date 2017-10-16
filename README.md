@@ -12,13 +12,13 @@ $ npm i egg-scripts --save
 
 ## Usage
 
-Add `egg-scripts` to `package.json` scripts:
+Add `eggctl` to `package.json` scripts:
 
 ```json
 {
   "scripts": {
-    "start": "egg-scripts start --daemon",
-    "stop": "egg-scripts stop"
+    "start": "eggctl start --daemon",
+    "stop": "eggctl stop"
   }
 }
 ```
@@ -36,10 +36,10 @@ Then run as:
 Start egg at prod mode.
 
 ```bash
-$ egg-scripts start [options] [baseDir]
+$ eggctl start [options] [baseDir]
 # Usage
-# egg-scripts start --port=7001
-# egg-scripts start ./server
+# eggctl start --port=7001
+# eggctl start ./server
 ```
 
 - **Arguments**
@@ -50,7 +50,10 @@ $ egg-scripts start [options] [baseDir]
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
   - `daemon` - whether run at background daemon mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
-  - `env` - egg server env, default to `process.env.EGG_SERVER_ENV`, recommended to keep empty then use framwork default env.
+  - `env` - server env, default to `process.env.EGG_SERVER_ENV`, recommended to keep empty then use framwork default env.
+  - `stdout` - customize stdout file, default to `$HOME/logs/master-stdout.log`.
+  - `stderr` - customize stderr file, default to `$HOME/logs/master-stderr.log`.
+  - `timeout` - the maximum timeout when app starts, default to 300s.
 
 ### stop
 
@@ -58,8 +61,8 @@ Stop egg gracefull.
 
 ```bash
 # stop egg
-$ egg-scripts stop [baseDir]
-# egg-scripts stop ./server
+$ eggctl stop [baseDir]
+# eggctl stop ./server
 ```
 
 - **Arguments**
