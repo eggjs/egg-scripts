@@ -17,6 +17,7 @@ describe('test/stop.test.js', () => {
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
+  const fixturePathR = path.normalize(fixturePath).replace(/\\/g, '\\\\'); // for win32
 
   before(function* () {
     yield mkdirp(homePath);
@@ -58,15 +59,18 @@ describe('test/stop.test.js', () => {
         // yield killer.end();
         yield sleep(waitTime);
 
-        // make sure is kill not auto exist
-        assert(!app.stdout.includes('exist by env'));
 
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-        assert(app.stdout.includes('[master] exit with code:0'));
-        assert(app.stdout.includes('[app_worker] exit with code:0'));
-        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+        if (process.platform !== 'win32') {
+        // make sure is kill not auto exist
+          assert(!app.stdout.includes('exist by env'));
+
+          assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+          assert(app.stdout.includes('[master] exit with code:0'));
+          assert(app.stdout.includes('[app_worker] exit with code:0'));
+          // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+          assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+          assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+        }
       });
     });
 
@@ -76,18 +80,20 @@ describe('test/stop.test.js', () => {
         killer.debug();
         killer.expect('code', 0);
 
-        // yield killer.end();
-        yield sleep(waitTime);
+        if (process.platform !== 'win32') {
+          // yield killer.end();
+          yield sleep(waitTime);
 
-        // make sure is kill not auto exist
-        assert(!app.stdout.includes('exist by env'));
+          // make sure is kill not auto exist
+          assert(!app.stdout.includes('exist by env'));
 
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-        assert(app.stdout.includes('[master] exit with code:0'));
-        assert(app.stdout.includes('[app_worker] exit with code:0'));
-        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+          assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+          assert(app.stdout.includes('[master] exit with code:0'));
+          assert(app.stdout.includes('[app_worker] exit with code:0'));
+          // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+          assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+          assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+        }
       });
     });
 
@@ -97,18 +103,20 @@ describe('test/stop.test.js', () => {
         killer.debug();
         killer.expect('code', 0);
 
-        // yield killer.end();
-        yield sleep(waitTime);
+        if (process.platform !== 'win32') {
+          // yield killer.end();
+          yield sleep(waitTime);
 
-        // make sure is kill not auto exist
-        assert(!app.stdout.includes('exist by env'));
+          // make sure is kill not auto exist
+          assert(!app.stdout.includes('exist by env'));
 
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-        assert(app.stdout.includes('[master] exit with code:0'));
-        assert(app.stdout.includes('[app_worker] exit with code:0'));
-        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-        assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-        assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+          assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+          assert(app.stdout.includes('[master] exit with code:0'));
+          assert(app.stdout.includes('[app_worker] exit with code:0'));
+          // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+          assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+          assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+        }
       });
     });
   });
@@ -130,21 +138,33 @@ describe('test/stop.test.js', () => {
     });
 
     it('should stop', function* () {
-      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
-        .debug()
-        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
-        .expect('stdout', /got master pid \["\d+\"\]/i)
-        .expect('code', 0)
-        .end();
+      if (process.platform !== 'win32') {
+        yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+          .debug()
+          .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
+          .expect('stdout', /got master pid \["\d+\"\]/i)
+          .expect('code', 0)
+          .end();
 
-      yield sleep(waitTime);
+        yield sleep(waitTime);
 
-      // master log
-      const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
+        // master log
+        const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
 
-      assert(stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(stdout.includes('[master] exit with code:0'));
-      assert(stdout.includes('[app_worker] exit with code:0'));
+        assert(stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(stdout.includes('[master] exit with code:0'));
+        assert(stdout.includes('[app_worker] exit with code:0'));
+      } else {
+        yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+          .debug()
+          .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePathR}`))
+          .expect('stdout', /(got master pid \["\d+\"\])|(\[egg-scripts\] stopped)/i)
+          .expect('code', 0)
+          .end();
+
+        yield sleep(waitTime);
+
+      }
 
       yield coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
@@ -159,7 +179,7 @@ describe('test/stop.test.js', () => {
       yield utils.cleanup(fixturePath);
       yield coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
-        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
+        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePathR}`))
         .expect('stderr', /can't detect any running egg process/)
         .expect('code', 0)
         .end();

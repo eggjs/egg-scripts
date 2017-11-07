@@ -3,8 +3,9 @@
 const helper = require('../lib/helper');
 const sleep = require('mz-modules/sleep');
 
-exports.cleanup = function* (baseDir) {
-  const processList = yield helper.findNodeProcess(x => x.cmd.includes(`"baseDir":"${baseDir}"`));
+exports.cleanup = function* (baseDir, port) {
+  port = port ? port : 7001;
+  const processList = yield helper.findNodeProcess(x => x.cmd.includes(`"baseDir":"${baseDir}"`), port);
 
   if (processList.length) {
     console.log(`cleanup: ${processList.length} to kill`);
