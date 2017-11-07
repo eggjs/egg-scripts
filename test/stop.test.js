@@ -10,6 +10,7 @@ const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
+const helper = require('../lib/helper');
 
 describe('test/stop.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
@@ -172,6 +173,23 @@ describe('test/stop.test.js', () => {
         .expect('code', 0)
         .end();
     });
+
+    if (process.platform === 'win32') {
+      it('should got pid', function* () {
+        const port = 7001;
+        const processList = yield helper.findNodeProcessWin(port);
+
+        assert(Array.isArray(processList) && processList.length);
+      });
+
+      it('should got empty pid', function* () {
+        const port = 0;
+        const processList = yield helper.findNodeProcessWin(port);
+
+        assert(Array.isArray(processList) && !processList.length);
+      });
+    }
+
   });
 
   describe('stop with not exist', () => {
