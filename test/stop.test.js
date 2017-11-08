@@ -155,6 +155,7 @@ describe('test/stop.test.js', () => {
         assert(stdout.includes('[master] receive signal SIGTERM, closing'));
         assert(stdout.includes('[master] exit with code:0'));
         assert(stdout.includes('[app_worker] exit with code:0'));
+
       } else {
         yield coffee.fork(eggBin, [ 'stop', fixturePath ])
           .debug()
