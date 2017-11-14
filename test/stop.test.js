@@ -165,4 +165,41 @@ describe('test/stop.test.js', () => {
         .end();
     });
   });
+
+  describe('stop with symlink', () => {
+    const baseDir = path.join(__dirname, 'fixtures/tmp');
+
+    beforeEach(function* () {
+      yield fs.symlink(fixturePath, baseDir);
+
+      yield utils.cleanup(fixturePath);
+      yield rimraf(logDir);
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2' ], { cwd: baseDir })
+        .debug()
+        .expect('stdout', new RegExp(`Starting custom-framework application at ${fixturePath}`))
+        .expect('code', 0)
+        .end();
+
+      yield rimraf(baseDir);
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+    });
+    afterEach(function* () {
+      yield utils.cleanup(fixturePath);
+      yield rimraf(baseDir);
+    });
+
+    it('should stop', function* () {
+      yield rimraf(baseDir);
+      yield fs.symlink(path.join(__dirname, 'fixtures/status'), baseDir);
+
+      yield coffee.fork(eggBin, [ 'stop', baseDir ])
+        .debug()
+        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${baseDir}`))
+        .expect('stdout', /got master pid \["\d+\"\]/i)
+        .expect('code', 0)
+        .end();
+    });
+  });
+
 });
