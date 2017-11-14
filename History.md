@@ -1,4 +1,10 @@
 
+2.1.1 / 2017-11-14
+==================
+
+**fixes**
+  * [[`7324d99`](http://github.com/eggjs/egg-scripts/commit/7324d99b504cac5fef7dbf280f7d9e6243c16bb7)] - fix: should stop app when baseDir is symlink (#12) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.1.0 / 2017-10-16
 ==================
 
