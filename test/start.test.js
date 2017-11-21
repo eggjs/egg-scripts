@@ -363,6 +363,38 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'hi, egg');
       });
     });
+
+    describe('auto set custom node dir to PATH', () => {
+      let app;
+      const fixturePath = path.join(__dirname, 'fixtures/custom-node-dir');
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        const expectPATH = [
+          path.join(fixturePath, 'node_modules/.bin'),
+          path.join(fixturePath, '.node/bin'),
+        ].join(path.delimiter) + path.delimiter;
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
+        assert(!app.stdout.includes('app_worker#3:'));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString().startsWith(`hi, ${expectPATH}`));
+      });
+    });
   });
 
   describe('start with daemon', () => {
