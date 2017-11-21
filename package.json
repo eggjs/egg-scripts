@@ -47,7 +47,7 @@
     "bin"
   ],
   "ci": {
-    "version": "6, 8"
+    "version": "6, 8, 9"
   },
   "bug": {
     "url": "https://github.com/eggjs/egg/issues"
