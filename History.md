@@ -1,4 +1,10 @@
 
+2.2.0 / 2017-11-22
+==================
+
+**features**
+  * [[`ac58d00`](http://github.com/eggjs/egg-scripts/commit/ac58d00a974fdfff6b5c722743e4b32174963c52)] - feat: cwd maybe not baseDir (#15) (zhennann <<zhen.nann@icloud.com>>)
+
 2.1.1 / 2017-11-14
 ==================
 
