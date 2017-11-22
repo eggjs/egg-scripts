@@ -335,6 +335,34 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'hi, egg');
       });
     });
+
+    describe('subDir as baseDir', () => {
+      let app;
+      const rootDir = path.join(__dirname, '..');
+      const subDir = path.join(__dirname, 'fixtures/subdir-as-basedir/base-dir');
+
+      before(function* () {
+        yield utils.cleanup(rootDir);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(rootDir);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', subDir ], { cwd: rootDir });
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
+      });
+    });
   });
 
   describe('start with daemon', () => {
