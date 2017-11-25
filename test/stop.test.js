@@ -165,4 +165,53 @@ describe('test/stop.test.js', () => {
         .end();
     });
   });
+
+  describe('stop --title', () => {
+    let app;
+    let killer;
+
+    beforeEach(function* () {
+      yield utils.cleanup(fixturePath);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
+      // app.debug();
+      app.expect('code', 0);
+      yield sleep(waitTime);
+
+      assert(app.stderr === '');
+      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+    });
+
+    afterEach(function* () {
+      app.proc.kill('SIGTERM');
+      yield utils.cleanup(fixturePath);
+    });
+
+    it('should stop', function* () {
+      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+        .debug()
+        .expect('stdout', new RegExp(`\\[egg-scripts] stopping egg application at ${fixturePath}`))
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
+
+      killer = coffee.fork(eggBin, [ 'stop', '--title=example' ], { cwd: fixturePath });
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      assert(!app.stdout.includes('exist by env'));
+
+      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+      assert(app.stdout.includes('[master] exit with code:0'));
+      assert(app.stdout.includes('[app_worker] exit with code:0'));
+      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
+      assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+    });
+  });
 });

@@ -46,7 +46,7 @@ $ eggctl start [options] [baseDir]
   - `baseDir` - directory of application, default to `process.cwd()`.
 - **Options**
   - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
-  - `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
+  - `title` - process title description, use for kill grep, default to `egg-server-${APP_NAME}`.
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
   - `daemon` - whether run at background daemon mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
@@ -67,3 +67,5 @@ $ eggctl stop [baseDir]
 
 - **Arguments**
   - `baseDir` - directory of application, default to `process.cwd()`.
+- **Options**
+  - `title` - process title description, use for kill grep, default to `egg-server-${APP_NAME}`.
