@@ -61,11 +61,8 @@ Stop egg gracefull.
 
 ```bash
 # stop egg
-$ eggctl stop [baseDir]
-# eggctl stop ./server
+$ eggctl stop [--title=example]
 ```
 
-- **Arguments**
-  - `baseDir` - directory of application, default to `process.cwd()`.
 - **Options**
-  - `title` - process title description, use for kill grep, default to `egg-server-${APP_NAME}`.
+  - `title` - process title description, use for kill grep.
