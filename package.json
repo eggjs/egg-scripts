@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "common-bin": "^2.7.1",
-    "egg-utils": "^2.2.0",
-    "moment": "^2.19.1",
+    "egg-utils": "^2.3.0",
+    "moment": "^2.19.2",
     "mz": "^2.7.0",
     "mz-modules": "^2.0.0",
     "node-homedir": "^1.1.0",
@@ -18,15 +18,15 @@
     "zlogger": "^1.1.0"
   },
   "devDependencies": {
-    "autod": "^2.10.1",
+    "autod": "^3.0.1",
     "coffee": "^4.1.0",
-    "egg": "^1.9.0",
+    "egg": "^1.11.0",
     "egg-bin": "^4.3.5",
     "egg-ci": "^1.8.0",
-    "eslint": "^4.8.0",
+    "eslint": "^4.11.0",
     "eslint-config-egg": "^5.1.1",
     "mm": "^2.2.0",
-    "urllib": "^2.25.0",
+    "urllib": "^2.25.1",
     "webstorm-disable-index": "^1.2.0"
   },
   "engines": {
