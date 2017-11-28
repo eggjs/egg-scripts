@@ -20,7 +20,7 @@
   "devDependencies": {
     "autod": "^3.0.1",
     "coffee": "^4.1.0",
-    "egg": "^2.0.0",
+    "egg": "^1.11.0",
     "egg-bin": "^4.3.5",
     "egg-ci": "^1.8.0",
     "eslint": "^4.11.0",
