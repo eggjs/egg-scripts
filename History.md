@@ -1,4 +1,16 @@
 
+2.3.0 / 2017-11-29
+==================
+
+**features**
+  * [[`4c41319`](http://github.com/eggjs/egg-scripts/commit/4c41319f9e309402b2ccb5c7afd5a6d3cda2453f)] - feat: support stop --title (#16) (TZ | 天猪 <<atian25@qq.com>>)
+
+2.2.0 / 2017-11-22
+==================
+
+**features**
+  * [[`ac58d00`](http://github.com/eggjs/egg-scripts/commit/ac58d00a974fdfff6b5c722743e4b32174963c52)] - feat: cwd maybe not baseDir (#15) (zhennann <<zhen.nann@icloud.com>>)
+
 2.1.1 / 2017-11-14
 ==================
 
