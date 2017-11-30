@@ -1,4 +1,13 @@
 
+2.4.0 / 2017-11-30
+==================
+
+**features**
+  * [[`8eda3d1`](https://github.com/eggjs/egg-scripts/commit/8eda3d10cfea5757f220fd82b562fd5fef433440)] - feat: add `${baseDir}/.node/bin` to PATH if exists (#14) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`4dd24a4`](https://github.com/eggjs/egg-scripts/commit/4dd24a45d92b2c2a8e1e450e0f13ba4143550ca9)] - test: add testcase for #12 (#13) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.3.0 / 2017-11-29
 ==================
 
