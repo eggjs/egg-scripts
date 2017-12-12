@@ -1,4 +1,10 @@
 
+2.5.0 / 2017-12-12
+==================
+
+**features**
+  * [[`b5559d5`](http://github.com/eggjs/egg-scripts/commit/b5559d54228543b5422047e6f056829df11f8c87)] - feat: support --ignore-error (#17) (TZ | 天猪 <<atian25@qq.com>>)
+
 2.4.0 / 2017-11-30
 ==================
 
