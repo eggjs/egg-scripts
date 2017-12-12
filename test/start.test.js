@@ -468,6 +468,20 @@ describe('test/start.test.js', () => {
         .end();
     });
 
+    it('should status check fail `--ignore-stderr`, exit with 0', function* () {
+      mm(process.env, 'WAIT_TIME', 5000);
+      mm(process.env, 'ERROR', 'error message');
+
+      const stderr = path.join(homePath, 'logs/master-stderr.log');
+
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd })
+        // .debug()
+        .expect('stderr', /nodejs.Error: error message/)
+        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+        .expect('code', 0)
+        .end();
+    });
+
     it('should status check fail, exit with 1', function* () {
       mm(process.env, 'WAIT_TIME', 5000);
       mm(process.env, 'ERROR', 'error message');
@@ -477,7 +491,7 @@ describe('test/start.test.js', () => {
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
         // .debug()
         .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start failed, see ${stderr}`))
+        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
         .expect('code', 1)
         .end();
     });

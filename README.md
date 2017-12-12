@@ -54,6 +54,7 @@ $ eggctl start [options] [baseDir]
   - `stdout` - customize stdout file, default to `$HOME/logs/master-stdout.log`.
   - `stderr` - customize stderr file, default to `$HOME/logs/master-stderr.log`.
   - `timeout` - the maximum timeout when app starts, default to 300s.
+  - `ignore-stderr` - whether ignore stderr when app starts.
 
 ### stop
 
