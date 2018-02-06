@@ -48,7 +48,7 @@ $ eggctl start [options] [baseDir]
   - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
   - `title` - process title description, use for kill grep, default to `egg-server-${APP_NAME}`.
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
-  - `daemon` - whether run at background daemon mode.
+  - `daemon` - whether run at background daemon mode, don't use it if in docker mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
   - `env` - server env, default to `process.env.EGG_SERVER_ENV`, recommended to keep empty then use framwork default env.
   - `stdout` - customize stdout file, default to `$HOME/logs/master-stdout.log`.
@@ -59,6 +59,8 @@ $ eggctl start [options] [baseDir]
 ### stop
 
 Stop egg gracefull.
+
+**Note:** if exec without `--title`, it will kill all egg process.
 
 ```bash
 # stop egg
