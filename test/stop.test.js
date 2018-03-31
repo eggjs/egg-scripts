@@ -51,64 +51,17 @@ describe('test/stop.test.js', () => {
       yield utils.cleanup(fixturePath);
     });
 
-    describe('full path', () => {
-      it('should stop', function* () {
-        killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
-        killer.debug();
-        killer.expect('code', 0);
+    it('should stop', function* () {
+      killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
+      killer.debug();
+      killer.expect('code', 0);
 
-        // yield killer.end();
-        yield sleep(waitTime);
+      // yield killer.end();
+      yield sleep(waitTime);
 
 
         if (process.platform !== 'win32') {
         // make sure is kill not auto exist
-          assert(!app.stdout.includes('exist by env'));
-
-          assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-          assert(app.stdout.includes('[master] exit with code:0'));
-          assert(app.stdout.includes('[app_worker] exit with code:0'));
-          // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-          assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-          assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
-        }
-      });
-    });
-
-    describe('relative path', () => {
-      it('should stop', function* () {
-        killer = coffee.fork(eggBin, [ 'stop', path.relative(process.cwd(), fixturePath) ]);
-        killer.debug();
-        killer.expect('code', 0);
-
-        if (process.platform !== 'win32') {
-          // yield killer.end();
-          yield sleep(waitTime);
-
-          // make sure is kill not auto exist
-          assert(!app.stdout.includes('exist by env'));
-
-          assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-          assert(app.stdout.includes('[master] exit with code:0'));
-          assert(app.stdout.includes('[app_worker] exit with code:0'));
-          // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-          assert(killer.stdout.includes(`[egg-scripts] stopping egg application at ${fixturePath}`));
-          assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
-        }
-      });
-    });
-
-    describe('without baseDir', () => {
-      it('should stop', function* () {
-        killer = coffee.fork(eggBin, [ 'stop' ], { cwd: fixturePath });
-        killer.debug();
-        killer.expect('code', 0);
-
-        if (process.platform !== 'win32') {
-          // yield killer.end();
-          yield sleep(waitTime);
-
-          // make sure is kill not auto exist
           assert(!app.stdout.includes('exist by env'));
 
           assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
@@ -204,4 +157,147 @@ describe('test/stop.test.js', () => {
         .end();
     });
   });
+
+  describe('stop --title', () => {
+    let app;
+    let killer;
+
+    beforeEach(function* () {
+      yield utils.cleanup(fixturePath);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
+      // app.debug();
+      app.expect('code', 0);
+      yield sleep(waitTime);
+
+      assert(app.stderr === '');
+      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+    });
+
+    afterEach(function* () {
+      app.proc.kill('SIGTERM');
+      yield utils.cleanup(fixturePath);
+    });
+
+    it('should stop', function* () {
+      yield coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
+        .debug()
+        .expect('stdout', /\[egg-scripts] stopping egg application with --title=random/)
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
+
+      killer = coffee.fork(eggBin, [ 'stop', '--title=example' ], { cwd: fixturePath });
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      assert(!app.stdout.includes('exist by env'));
+
+      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+      assert(app.stdout.includes('[master] exit with code:0'));
+      assert(app.stdout.includes('[app_worker] exit with code:0'));
+      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      assert(killer.stdout.includes('[egg-scripts] stopping egg application with --title=example'));
+      assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+    });
+  });
+
+  describe('stop all', () => {
+    let app;
+    let app2;
+    let killer;
+
+    beforeEach(function* () {
+      yield utils.cleanup(fixturePath);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
+      // app.debug();
+      app.expect('code', 0);
+
+      app2 = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=test', '--port=7002', fixturePath ]);
+      app2.expect('code', 0);
+
+      yield sleep(waitTime);
+
+      assert(app.stderr === '');
+      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+
+      assert(app2.stderr === '');
+      assert(app2.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
+      const result2 = yield httpclient.request('http://127.0.0.1:7002');
+      assert(result2.data.toString() === 'hi, egg');
+    });
+
+    afterEach(function* () {
+      app.proc.kill('SIGTERM');
+      app2.proc.kill('SIGTERM');
+      yield utils.cleanup(fixturePath);
+    });
+
+    it('should stop', function* () {
+      killer = coffee.fork(eggBin, [ 'stop' ], { cwd: fixturePath });
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      assert(!app.stdout.includes('exist by env'));
+      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+      assert(app.stdout.includes('[master] exit with code:0'));
+      assert(app.stdout.includes('[app_worker] exit with code:0'));
+      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
+      assert(killer.stdout.match(/got master pid \["\d+\","\d+\"\]/i));
+
+      assert(!app2.stdout.includes('exist by env'));
+      assert(app2.stdout.includes('[master] receive signal SIGTERM, closing'));
+      assert(app2.stdout.includes('[master] exit with code:0'));
+      assert(app2.stdout.includes('[app_worker] exit with code:0'));
+    });
+  });
+
+  describe('stop with symlink', () => {
+    const baseDir = path.join(__dirname, 'fixtures/tmp');
+
+    beforeEach(function* () {
+      yield fs.symlink(fixturePath, baseDir);
+
+      yield utils.cleanup(fixturePath);
+      yield rimraf(logDir);
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2' ], { cwd: baseDir })
+        .debug()
+        .expect('stdout', new RegExp(`Starting custom-framework application at ${fixturePath}`))
+        .expect('code', 0)
+        .end();
+
+      yield rimraf(baseDir);
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+    });
+    afterEach(function* () {
+      yield utils.cleanup(fixturePath);
+      yield rimraf(baseDir);
+    });
+
+    it('should stop', function* () {
+      yield rimraf(baseDir);
+      yield fs.symlink(path.join(__dirname, 'fixtures/status'), baseDir);
+
+      yield coffee.fork(eggBin, [ 'stop', baseDir ])
+        .debug()
+        .expect('stdout', /\[egg-scripts] stopping egg application/)
+        .expect('stdout', /got master pid \["\d+\"\]/i)
+        .expect('code', 0)
+        .end();
+    });
+  });
+
 });

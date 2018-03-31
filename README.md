@@ -46,24 +46,26 @@ $ eggctl start [options] [baseDir]
   - `baseDir` - directory of application, default to `process.cwd()`.
 - **Options**
   - `port` - listening port, default to `process.env.PORT`, if unset, egg will use `7001` as default.
-  - `title` - process title description, use for kill grep, default to `egg-server-APPNAME`.
+  - `title` - process title description, use for kill grep, default to `egg-server-${APP_NAME}`.
   - `workers` - numbers of app workers, default to `process.env.EGG_WORKERS`, if unset, egg will use `os.cpus().length`  as default.
-  - `daemon` - whether run at background daemon mode.
+  - `daemon` - whether run at background daemon mode, don't use it if in docker mode.
   - `framework` - specify framework that can be absolute path or npm package, default to auto detect.
   - `env` - server env, default to `process.env.EGG_SERVER_ENV`, recommended to keep empty then use framwork default env.
   - `stdout` - customize stdout file, default to `$HOME/logs/master-stdout.log`.
   - `stderr` - customize stderr file, default to `$HOME/logs/master-stderr.log`.
   - `timeout` - the maximum timeout when app starts, default to 300s.
+  - `ignore-stderr` - whether ignore stderr when app starts.
 
 ### stop
 
 Stop egg gracefull.
 
+**Note:** if exec without `--title`, it will kill all egg process.
+
 ```bash
 # stop egg
-$ eggctl stop [baseDir]
-# eggctl stop ./server
+$ eggctl stop [--title=example]
 ```
 
-- **Arguments**
-  - `baseDir` - directory of application, default to `process.cwd()`.
+- **Options**
+  - `title` - process title description, use for kill grep.

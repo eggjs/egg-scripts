@@ -1,4 +1,42 @@
 
+2.5.1 / 2018-02-06
+==================
+
+  * chore: add description for ignore-stderr (#18)
+
+2.5.0 / 2017-12-12
+==================
+
+**features**
+  * [[`b5559d5`](http://github.com/eggjs/egg-scripts/commit/b5559d54228543b5422047e6f056829df11f8c87)] - feat: support --ignore-error (#17) (TZ | 天猪 <<atian25@qq.com>>)
+
+2.4.0 / 2017-11-30
+==================
+
+**features**
+  * [[`8eda3d1`](https://github.com/eggjs/egg-scripts/commit/8eda3d10cfea5757f220fd82b562fd5fef433440)] - feat: add `${baseDir}/.node/bin` to PATH if exists (#14) (fengmk2 <<fengmk2@gmail.com>>)
+
+**others**
+  * [[`4dd24a4`](https://github.com/eggjs/egg-scripts/commit/4dd24a45d92b2c2a8e1e450e0f13ba4143550ca9)] - test: add testcase for #12 (#13) (Haoliang Gao <<sakura9515@gmail.com>>)
+
+2.3.0 / 2017-11-29
+==================
+
+**features**
+  * [[`4c41319`](http://github.com/eggjs/egg-scripts/commit/4c41319f9e309402b2ccb5c7afd5a6d3cda2453f)] - feat: support stop --title (#16) (TZ | 天猪 <<atian25@qq.com>>)
+
+2.2.0 / 2017-11-22
+==================
+
+**features**
+  * [[`ac58d00`](http://github.com/eggjs/egg-scripts/commit/ac58d00a974fdfff6b5c722743e4b32174963c52)] - feat: cwd maybe not baseDir (#15) (zhennann <<zhen.nann@icloud.com>>)
+
+2.1.1 / 2017-11-14
+==================
+
+**fixes**
+  * [[`7324d99`](http://github.com/eggjs/egg-scripts/commit/7324d99b504cac5fef7dbf280f7d9e6243c16bb7)] - fix: should stop app when baseDir is symlink (#12) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.1.0 / 2017-10-16
 ==================
 

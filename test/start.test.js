@@ -336,6 +336,66 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'hi, egg');
       });
     });
+
+    describe('subDir as baseDir', () => {
+      let app;
+      const rootDir = path.join(__dirname, '..');
+      const subDir = path.join(__dirname, 'fixtures/subdir-as-basedir/base-dir');
+
+      before(function* () {
+        yield utils.cleanup(rootDir);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(rootDir);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', subDir ], { cwd: rootDir });
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, egg');
+      });
+    });
+
+    describe('auto set custom node dir to PATH', () => {
+      let app;
+      const fixturePath = path.join(__dirname, 'fixtures/custom-node-dir');
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        const expectPATH = [
+          path.join(fixturePath, 'node_modules/.bin'),
+          path.join(fixturePath, '.node/bin'),
+        ].join(path.delimiter) + path.delimiter;
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
+        assert(!app.stdout.includes('app_worker#3:'));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString().startsWith(`hi, ${expectPATH}`));
+      });
+    });
   });
 
   describe('start with daemon', () => {
@@ -410,6 +470,20 @@ describe('test/start.test.js', () => {
         .end();
     });
 
+    it('should status check fail `--ignore-stderr`, exit with 0', function* () {
+      mm(process.env, 'WAIT_TIME', 5000);
+      mm(process.env, 'ERROR', 'error message');
+
+      const stderr = path.join(homePath, 'logs/master-stderr.log');
+
+      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd })
+        // .debug()
+        .expect('stderr', /nodejs.Error: error message/)
+        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+        .expect('code', 0)
+        .end();
+    });
+
     it('should status check fail, exit with 1', function* () {
       mm(process.env, 'WAIT_TIME', 5000);
       mm(process.env, 'ERROR', 'error message');
@@ -419,7 +493,7 @@ describe('test/start.test.js', () => {
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
         // .debug()
         .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start failed, see ${stderr}`))
+        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
         .expect('code', 1)
         .end();
     });
