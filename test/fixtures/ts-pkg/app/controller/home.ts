@@ -1,7 +1,7 @@
 import { Controller } from 'egg';
 
 export default class AppController extends Controller {
-  public async index() {
+  public index() {
     try {
       throw new Error('some err');
     } catch (err) {

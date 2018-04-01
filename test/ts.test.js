@@ -33,7 +33,7 @@ describe('test/ts.test.js', () => {
     });
 
     afterEach(function* () {
-      app.proc.kill('SIGTERM');
+      app && app.proc.kill('SIGTERM');
       yield utils.cleanup(fixturePath);
     });
 
@@ -90,7 +90,7 @@ describe('test/ts.test.js', () => {
     });
 
     afterEach(function* () {
-      app.proc.kill('SIGTERM');
+      app && app.proc.kill('SIGTERM');
       yield utils.cleanup(fixturePath);
     });
 
