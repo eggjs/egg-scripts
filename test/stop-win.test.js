@@ -53,7 +53,7 @@ describe('test/stop.test.js', () => {
       yield utils.cleanup({ port });
     });
 
-    it('should stop', function* () {
+    it('should stop --port', function* () {
       killer = coffee.fork(eggBin, [ 'stop', fixturePath, `--port=${port}` ]);
       killer.debug();
       killer.expect('code', 0);
@@ -73,7 +73,8 @@ describe('test/stop.test.js', () => {
     });
   });
 
-  describe('stop with daemon', () => {
+
+  describe.only('stop with daemon', () => {
     beforeEach(function* () {
       yield utils.cleanup(port);
       yield rimraf(logDir);
@@ -90,7 +91,7 @@ describe('test/stop.test.js', () => {
     });
 
 
-    it('should stop by port under win32', function* () {
+    it('should stop --port', function* () {
       yield coffee.fork(eggBin, [ 'stop', fixturePath, `--port=${port}` ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application/)
