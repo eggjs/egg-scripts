@@ -11,6 +11,7 @@ const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils-win');
 const port = 7001;
+const regexDim = /\\+/g;
 
 process.platform === 'win32' &&
 describe('test/stop.test.js', () => {
@@ -128,7 +129,6 @@ describe('test/stop.test.js', () => {
   });
 
   // need with egg-cluster patch : https://github.com/eggjs/egg-cluster/pull/63
-  false &&
   describe('stop --title', () => {
     let app;
     let killer;
@@ -180,7 +180,6 @@ describe('test/stop.test.js', () => {
   });
 
   // need with egg-cluster patch : https://github.com/eggjs/egg-cluster/pull/63
-  false &&
   describe('stop all', () => {
     let app;
     let app2;
