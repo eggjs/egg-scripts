@@ -24,6 +24,7 @@ Add `eggctl` to `package.json` scripts:
 ```
 
 Then run as:
+
 - `npm start`
 - `npm stop`
 
@@ -55,6 +56,7 @@ $ eggctl start [options] [baseDir]
   - `stderr` - customize stderr file, default to `$HOME/logs/master-stderr.log`.
   - `timeout` - the maximum timeout when app starts, default to 300s.
   - `ignore-stderr` - whether ignore stderr when app starts.
+  - `sourcemap` / `typescript` / `ts` - provides source map support for stack traces.
 
 ### stop
 

@@ -1,8 +1,10 @@
 logs/
 npm-debug.log
-/node_modules
+node_modules
 coverage/
 .idea/
 run/
 .DS_Store
 *.swp
+test/fixtures/ts/app/controller/home.js
+test/fixtures/ts-pkg/app/controller/home.js

@@ -310,9 +310,10 @@ describe('test/start.test.js', () => {
 
     describe('read cluster config', () => {
       let app;
-      const fixturePath = path.join(__dirname, 'fixtures/cluster-config');
+      let fixturePath;
 
       before(function* () {
+        fixturePath = path.join(__dirname, 'fixtures/cluster-config');
         yield utils.cleanup(fixturePath);
       });
 
@@ -366,9 +367,10 @@ describe('test/start.test.js', () => {
 
     describe('auto set custom node dir to PATH', () => {
       let app;
-      const fixturePath = path.join(__dirname, 'fixtures/custom-node-dir');
+      let fixturePath;
 
       before(function* () {
+        fixturePath = path.join(__dirname, 'fixtures/custom-node-dir');
         yield utils.cleanup(fixturePath);
       });
 
@@ -382,16 +384,16 @@ describe('test/start.test.js', () => {
           path.join(fixturePath, 'node_modules/.bin'),
           path.join(fixturePath, '.node/bin'),
         ].join(path.delimiter) + path.delimiter;
-        app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
-        app.debug();
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', '--port=7002', fixturePath ]);
+        // app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
 
         assert(app.stderr === '');
-        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
+        assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7002/));
         assert(!app.stdout.includes('app_worker#3:'));
-        const result = yield httpclient.request('http://127.0.0.1:7001');
+        const result = yield httpclient.request('http://127.0.0.1:7002');
         assert(result.data.toString().startsWith(`hi, ${expectPATH}`));
       });
     });
@@ -408,7 +410,7 @@ describe('test/start.test.js', () => {
     });
     afterEach(function* () {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
-        .debug()
+        // .debug()
         .end();
       yield utils.cleanup(cwd);
     });
@@ -440,7 +442,7 @@ describe('test/start.test.js', () => {
     it('should start default egg', function* () {
       cwd = path.join(__dirname, 'fixtures/egg-app');
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', cwd ])
-        .debug()
+        // .debug()
         .expect('stdout', /Starting egg application/)
         .expect('stdout', /egg started on http:\/\/127\.0\.0\.1:7001/)
         .expect('code', 0)
