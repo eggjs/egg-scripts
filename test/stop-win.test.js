@@ -173,9 +173,9 @@ describe('test/stop.test.js', () => {
       // assert(app.stdout.includes('[master] exit with code:0'));
       // assert(app.stdout.includes('[app_worker] exit with code:0'));
       // assert(app.stdout.includes('[agent_worker] exit with code:0'));
-      const tt = parseKeyStr(title);
-      assert(killer.stdout.includes(`[egg-scripts] stopping egg application with --title=${tt}`));
-      assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
+      // const tt = parseKeyStr(title);
+      assert(killer.stdout.includes(`[egg-scripts] stopping egg application with --title=${title}`));
+      assert(killer.stdout.match(/got master pid \[\d+?(,\d+?)+\]/i));
     });
   });
 
