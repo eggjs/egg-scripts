@@ -113,7 +113,18 @@ describe('test/stop.test.js', () => {
         .end();
 
     });
+  });
 
+  describe('stop without existing', () => {
+    it('should work', function* () {
+      yield utils.cleanup(fixturePath);
+      yield coffee.fork(eggBin, [ 'stop', fixturePath, `--port=${port}` ])
+        .debug()
+        .expect('stdout', /\[egg-scripts] stopping egg application/)
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
+    });
   });
 
 
