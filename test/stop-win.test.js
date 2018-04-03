@@ -36,7 +36,7 @@ describe('test/stop.test.js', () => {
     let killer;
 
     beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
+      yield utils.cleanup({ port });
       app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
@@ -50,7 +50,7 @@ describe('test/stop.test.js', () => {
 
     afterEach(function* () {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      yield utils.cleanup({ port });
     });
 
     it('should stop', function* () {
@@ -148,7 +148,7 @@ describe('test/stop.test.js', () => {
 
     afterEach(function* () {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      yield utils.cleanup({ port });
     });
 
     it('should stop', function* () {
@@ -187,7 +187,8 @@ describe('test/stop.test.js', () => {
     const title2 = title + '-more';
 
     beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
+      yield utils.cleanup({ port });
+      yield utils.cleanup({ port: 7002 });
       app = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title}`, fixturePath ]);
       // app.debug();
       app.expect('code', 0);
