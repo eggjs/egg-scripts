@@ -1,4 +1,9 @@
 
+2.6.0 / 2018-04-03
+==================
+
+  * feat: provides source map support for stack traces (#19)
+
 2.5.1 / 2018-02-06
 ==================
 
