@@ -2,7 +2,6 @@
 
 const path = require('path');
 const assert = require('assert');
-const fs = require('mz/fs');
 const sleep = require('mz-modules/sleep');
 const rimraf = require('mz-modules/rimraf');
 const mkdirp = require('mz-modules/mkdirp');
