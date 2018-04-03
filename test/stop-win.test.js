@@ -249,7 +249,7 @@ describe('test/stop.test.js', () => {
 
 });
 
-function parseKeyStr(str) {
-  const ret = str && typeof str === 'string' ? str : '';
-  return ret.replace(regexDim, '/');
-}
+// function parseKeyStr(str) {
+//   const ret = str && typeof str === 'string' ? str : '';
+//   return ret.replace(regexDim, '/');
+// }
