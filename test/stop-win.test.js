@@ -10,7 +10,7 @@ const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils-win');
 const port = 7001;
-const regexDim = /\\+/g;
+// const regexDim = /\\+/g;
 
 process.platform === 'win32' &&
 describe('test/stop.test.js', () => {
