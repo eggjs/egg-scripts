@@ -175,7 +175,7 @@ describe('test/start.test.js', () => {
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup(fixturePath, 7002);
       });
 
       it('should start', function* () {
@@ -201,7 +201,7 @@ describe('test/start.test.js', () => {
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup(fixturePath, 7002);
       });
 
       it('should start', function* () {
@@ -271,7 +271,8 @@ describe('test/start.test.js', () => {
         let result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
         result = yield httpclient.request('http://127.0.0.1:7001/path');
-        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
+        const p = path.normalize(`${fixturePath}/node_modules/.bin${path.delimiter}`).replace(/\\/g, '\\\\');
+        assert(result.data.toString().match(new RegExp(`^${p}`)));
       });
     });
 
@@ -319,7 +320,7 @@ describe('test/start.test.js', () => {
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup(fixturePath, 8000);
       });
 
       it('should start', function* () {
@@ -413,6 +414,7 @@ describe('test/start.test.js', () => {
         // .debug()
         .end();
       yield utils.cleanup(cwd);
+      yield utils.cleanup(cwd, 7002);
     });
 
     it('should start custom-framework', function* () {
@@ -488,7 +490,7 @@ describe('test/start.test.js', () => {
       mm(process.env, 'WAIT_TIME', 5000);
       mm(process.env, 'ERROR', 'error message');
 
-      const stderr = path.join(homePath, 'logs/master-stderr.log');
+      const stderr = path.join(homePath, 'logs/master-stderr.log').replace(/\\/g, '\\\\');
 
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
         // .debug()
@@ -511,3 +513,4 @@ describe('test/start.test.js', () => {
 
   });
 });
+
