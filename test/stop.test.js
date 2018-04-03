@@ -112,7 +112,7 @@ describe('test/stop.test.js', () => {
     });
   });
 
-  describe('stop with not exist', () => {
+  describe('stop without existing', () => {
     it('should work', function* () {
       yield utils.cleanup(fixturePath);
       yield coffee.fork(eggBin, [ 'stop', fixturePath ])
