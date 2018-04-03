@@ -179,6 +179,72 @@ describe('test/stop.test.js', () => {
     });
   });
 
+  // need with egg-cluster patch : https://github.com/eggjs/egg-cluster/pull/63
+  false &&
+  describe('stop all', () => {
+    let app;
+    let app2;
+    let killer;
+    const title2 = title + '-more';
+
+    beforeEach(function* () {
+      yield utils.cleanup(fixturePath);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title}`, fixturePath ]);
+      // app.debug();
+      app.expect('code', 0);
+
+      app2 = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title2}`, '--port=7002', fixturePath ]);
+      app2.expect('code', 0);
+
+      yield sleep(waitTime);
+
+      assert(app.stderr === '');
+      assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+
+      assert(app2.stderr === '');
+      assert(app2.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
+      const result2 = yield httpclient.request('http://127.0.0.1:7002');
+      assert(result2.data.toString() === 'hi, egg');
+    });
+
+    afterEach(function* () {
+      app.proc.kill('SIGTERM');
+      app2.proc.kill('SIGTERM');
+      yield utils.cleanup({ port });
+      yield utils.cleanup({ port: 7002 });
+    });
+
+    it('should stop', function* () {
+      killer = coffee.fork(eggBin, [ 'stop', `--title=${title}` ]);
+      killer.debug();
+      killer.expect('code', 0);
+
+      killer = coffee.fork(eggBin, [ 'stop', `--title=${title2}` ]);
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      // assert(!app.stdout.includes('exist by env'));
+      // assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+      // assert(app.stdout.includes('[master] exit with code:0'));
+      // assert(app.stdout.includes('[app_worker] exit with code:0'));
+      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
+      assert(killer.stdout.match(/got master pid \[\d+?(,\d+?)+\]/i));
+
+      // assert(!app2.stdout.includes('exist by env'));
+      // assert(app2.stdout.includes('[master] receive signal SIGTERM, closing'));
+      // assert(app2.stdout.includes('[master] exit with code:0'));
+      // assert(app2.stdout.includes('[app_worker] exit with code:0'));
+    });
+  });
+
+
 });
 
 function parseKeyStr(str) {
