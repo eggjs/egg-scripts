@@ -74,7 +74,7 @@ describe('test/stop.test.js', () => {
   });
 
 
-  describe.only('stop with daemon', () => {
+  describe('stop with daemon', () => {
     beforeEach(function* () {
       yield utils.cleanup(port);
       yield rimraf(logDir);
@@ -117,6 +117,7 @@ describe('test/stop.test.js', () => {
     });
   });
 
+
   describe('stop without existing', () => {
     it('should work', function* () {
       yield utils.cleanup(fixturePath);
@@ -129,14 +130,15 @@ describe('test/stop.test.js', () => {
     });
   });
 
+
   // need with egg-cluster patch : https://github.com/eggjs/egg-cluster/pull/63
   describe('stop --title', () => {
     let app;
     let killer;
 
     beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
-      app = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title}`, fixturePath ]);
+      yield utils.cleanup({ port });
+      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', `--title=${title}`, fixturePath ]);
       // app.debug();
       app.expect('code', 0);
       yield sleep(waitTime);
@@ -153,14 +155,14 @@ describe('test/stop.test.js', () => {
     });
 
     it('should stop', function* () {
-      yield coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
+      yield coffee.fork(eggBin, [ 'stop', '--title=random' ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application with --title=random/)
         .expect('stderr', /can't detect any running egg process/)
         .expect('code', 0)
         .end();
 
-      killer = coffee.fork(eggBin, [ 'stop', `--title=${title}` ], { cwd: fixturePath });
+      killer = coffee.fork(eggBin, [ 'stop', `--title=${title}` ]);
       killer.debug();
       killer.expect('code', 0);
 
@@ -190,11 +192,11 @@ describe('test/stop.test.js', () => {
     beforeEach(function* () {
       yield utils.cleanup({ port });
       yield utils.cleanup({ port: 7002 });
-      app = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title}`, fixturePath ]);
+      app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', `--title=${title}`, fixturePath ]);
       // app.debug();
       app.expect('code', 0);
 
-      app2 = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title2}`, '--port=7002', fixturePath ]);
+      app2 = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', `--title=${title2}`, '--port=7002', fixturePath ]);
       app2.expect('code', 0);
 
       yield sleep(waitTime);
