@@ -11,6 +11,7 @@ const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
 
+process.platform === 'win32' ||
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
