@@ -13,13 +13,13 @@ const port = 7001;
 // const regexDim = /\\+/g;
 
 process.platform === 'win32' &&
-describe('test/stop.test.js', () => {
+describe('test/stop-win.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
-  const title = 'egg-win-test-c:\\a\\b\\-' + Math.random();
+  const title = 'egg-win-stop-test-c:\\a\\b\\-' + Math.random();
 
   before(function* () {
     yield mkdirp(homePath);

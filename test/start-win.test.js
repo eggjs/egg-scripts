@@ -19,8 +19,8 @@ describe('test/start-win.test.js', () => {
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
-  // const title = 'egg-win-test-c:\\a\\b\\-' + Math.random();
-  const title = 'egg-win-test-c:/a/b/-' + Math.random();
+  // const title = 'egg-win-start-test-c:\\a\\b\\-' + Math.random();
+  const title = 'egg-win-start-test-c:/a/b/-' + Math.random();
 
   before(function* () {
     yield mkdirp(homePath);
