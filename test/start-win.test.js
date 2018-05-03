@@ -9,15 +9,18 @@ const mkdirp = require('mz-modules/mkdirp');
 const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
-const utils = require('./utils');
+const utils = require('./utils-win');
+const port = 7001;
 
-process.platform === 'win32' ||
-describe('test/start.test.js', () => {
+process.platform === 'win32' &&
+describe('test/start-win.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
+  // const title = 'egg-win-start-test-c:\\a\\b\\-' + Math.random();
+  const title = 'egg-win-start-test-c:/a/b/-' + Math.random();
 
   before(function* () {
     yield mkdirp(homePath);
@@ -33,12 +36,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -63,12 +66,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -89,12 +92,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -115,12 +118,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -141,24 +144,24 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=egg-test', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--workers=2', `--title=${title}`, fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
 
         assert(app.stderr === '');
-        assert(app.stdout.includes('--title=egg-test'));
-        assert(app.stdout.includes('"title":"egg-test"'));
+        assert(app.stdout.includes(`--title=${title}`));
+        assert(app.stdout.includes(`"title":"${title}"`));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         assert(app.stdout.includes('app_worker#2:'));
         assert(!app.stdout.includes('app_worker#3:'));
@@ -171,12 +174,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port: 7002 });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port: 7002 });
       });
 
       it('should start', function* () {
@@ -197,12 +200,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port: process.env.PORT });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port: process.env.PORT });
       });
 
       it('should start', function* () {
@@ -223,12 +226,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -249,12 +252,12 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -272,7 +275,8 @@ describe('test/start.test.js', () => {
         let result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
         result = yield httpclient.request('http://127.0.0.1:7001/path');
-        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
+        // assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
+        assert(result.data.toString().indexOf(path.join(fixturePath, `/node_modules/.bin${path.delimiter}`)) === 0);
       });
     });
 
@@ -280,14 +284,14 @@ describe('test/start.test.js', () => {
       let app;
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
         yield rimraf(logDir);
         yield mkdirp(logDir);
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
         yield rimraf(path.join(fixturePath, 'stdout.log'));
         yield rimraf(path.join(fixturePath, 'stderr.log'));
       });
@@ -314,12 +318,12 @@ describe('test/start.test.js', () => {
       const fixturePath = path.join(__dirname, 'fixtures/cluster-config');
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -343,12 +347,12 @@ describe('test/start.test.js', () => {
       const subDir = path.join(__dirname, 'fixtures/subdir-as-basedir/base-dir');
 
       before(function* () {
-        yield utils.cleanup(rootDir);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(rootDir);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -370,12 +374,12 @@ describe('test/start.test.js', () => {
       const fixturePath = path.join(__dirname, 'fixtures/custom-node-dir');
 
       before(function* () {
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       after(function* () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        yield utils.cleanup({ port });
       });
 
       it('should start', function* () {
@@ -401,7 +405,8 @@ describe('test/start.test.js', () => {
   describe('start with daemon', () => {
     let cwd;
     beforeEach(function* () {
-      yield utils.cleanup(cwd);
+      yield utils.cleanup({ port });
+      yield utils.cleanup({ port: 7002 });
       yield rimraf(logDir);
       yield mkdirp(logDir);
       yield fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
@@ -411,7 +416,8 @@ describe('test/start.test.js', () => {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
         .debug()
         .end();
-      yield utils.cleanup(cwd);
+      yield utils.cleanup({ port });
+      yield utils.cleanup({ port: 7002 });
     });
 
     it('should start custom-framework', function* () {
@@ -456,17 +462,18 @@ describe('test/start.test.js', () => {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
         // .debug()
         .end();
-      yield utils.cleanup(cwd);
+      yield utils.cleanup({ port });
     });
 
     it('should status check success, exit with 0', function* () {
       mm(process.env, 'WAIT_TIME', 5000);
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
-        // .debug()
-        .expect('stdout', /Wait Start: 5.../)
-        .expect('stdout', /custom-framework started/)
-        .expect('code', 0)
-        .end();
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd });
+
+      // app.debug();
+      yield sleep(waitTime);
+      assert(app.stdout.includes('Wait Start: 5...'));
+      assert(app.stdout.includes('custom-framework started'));
+      app.expect('code', 0);
     });
 
     it('should status check fail `--ignore-stderr`, exit with 0', function* () {
@@ -474,13 +481,12 @@ describe('test/start.test.js', () => {
       mm(process.env, 'ERROR', 'error message');
 
       const stderr = path.join(homePath, 'logs/master-stderr.log');
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd });
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd })
-        // .debug()
-        .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
-        .expect('code', 0)
-        .end();
+      // app.debug();
+      app.expect('code', 0);
+      yield sleep(waitTime);
+      assert(app.stderr.includes('Start got error, see ' + stderr));
     });
 
     it('should status check fail, exit with 1', function* () {
@@ -488,24 +494,23 @@ describe('test/start.test.js', () => {
       mm(process.env, 'ERROR', 'error message');
 
       const stderr = path.join(homePath, 'logs/master-stderr.log');
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd });
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
-        // .debug()
-        .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
-        .expect('code', 1)
-        .end();
+      // app.debug();
+      yield sleep(waitTime);
+      app.expect('code', 1);
+      assert(app.stderr.includes('Start got error, see ' + stderr));
     });
 
     it('should status check timeout and exit with code 1', function* () {
       mm(process.env, 'WAIT_TIME', 10000);
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5000' ], { cwd });
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5000' ], { cwd })
-        // .debug()
-        .expect('stdout', /Wait Start: 1.../)
-        .expect('stderr', /Start failed, 5s timeout/)
-        .expect('code', 1)
-        .end();
+      // app.debug();
+      yield sleep(waitTime);
+      assert(app.stdout.includes('Wait Start: 1...'));
+      assert(app.stderr.includes('Start failed, 5s timeout'));
+      app.expect('code', 1);
     });
 
   });
