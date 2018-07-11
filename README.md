@@ -2,7 +2,7 @@
 
 deploy tool for egg project.
 
-**Note: Windows is not supported**
+**Note: Windows is partially supported, see [#22](https://github.com/eggjs/egg-scripts/pull/22)**
 
 ## Install
 
