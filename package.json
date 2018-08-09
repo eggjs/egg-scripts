@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "common-bin": "^2.7.1",
+    "debug": "^3.1.0",
     "egg-utils": "^2.3.0",
     "moment": "^2.19.2",
     "mz": "^2.7.0",
