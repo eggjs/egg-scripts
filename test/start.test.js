@@ -59,6 +59,26 @@ describe('test/start.test.js', () => {
       });
     });
 
+    describe('child exit with 1', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should emit spawn error', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--port=10', '--workers=2', fixturePath ]);
+
+        yield sleep(waitTime);
+        assert(/Error: spawn node .+ fail, exit code: 1/.test(app.stderr));
+      });
+    });
+
     describe('relative path', () => {
       let app;
 
@@ -514,6 +534,5 @@ describe('test/start.test.js', () => {
         .expect('code', 1)
         .end();
     });
-
   });
 });
