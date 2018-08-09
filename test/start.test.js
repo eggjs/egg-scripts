@@ -72,7 +72,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should emit spawn error', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--port=10', '--workers=2', fixturePath ]);
+        app = coffee.fork(eggBin, [ 'start', '--port=135', '--workers=2', fixturePath ]);
 
         yield sleep(waitTime);
         assert(/Error: spawn node .+ fail, exit code: 1/.test(app.stderr));
