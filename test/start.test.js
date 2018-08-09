@@ -72,10 +72,14 @@ describe('test/start.test.js', () => {
       });
 
       it('should emit spawn error', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--port=135', '--workers=2', fixturePath ]);
+        const srv = require('http').createServer(() => {});
+        srv.listen(7007);
+
+        app = coffee.fork(eggBin, [ 'start', '--port=7007', '--workers=2', fixturePath ]);
 
         yield sleep(waitTime);
         assert(/Error: spawn node .+ fail, exit code: 1/.test(app.stderr));
+        srv.close();
       });
     });
 
