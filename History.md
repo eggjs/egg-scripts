@@ -1,4 +1,13 @@
 
+2.7.0 / 2018-08-10
+==================
+
+**features**
+  * [[`22faa4c`](http://github.com/eggjs/egg-scripts/commit/22faa4cfbb84cc5bc819d981dce962d8f95f8357)] - feat: stop command support windows (#22) (Baffin Lee <<baffinlee@gmail.com>>)
+
+**others**
+  * [[`e07726c`](http://github.com/eggjs/egg-scripts/commit/e07726c176a89dd63482b588868fd1feaab1fba6)] - refactor: raw spawn call to instead of helper.spawn in start non-daemon mode (#23) (Khaidi Chu <<i@2333.moe>>)
+
 2.6.0 / 2018-04-03
 ==================
 
