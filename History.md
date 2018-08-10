@@ -1,4 +1,10 @@
 
+2.8.0 / 2018-08-10
+==================
+
+**others**
+  * [[`dac29f7`](http://github.com/eggjs/egg-scripts/commit/dac29f73ed2dfc18edc2e8743ffd509af8ab0f4a)] - refactor: add `this.exit` to instead of `process.exit` (#25) (Khaidi Chu <<i@2333.moe>>)
+
 2.7.0 / 2018-08-10
 ==================
 
