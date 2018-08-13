@@ -10,6 +10,7 @@ const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
+const isWin = process.platform === 'win32';
 
 describe('test/start.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
@@ -55,6 +56,30 @@ describe('test/start.test.js', () => {
         assert(!app.stdout.includes('app_worker#3:'));
         const result = yield httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
+      });
+    });
+
+    describe('child exit with 1', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should emit spawn error', function* () {
+        const srv = require('http').createServer(() => {});
+        srv.listen(7007);
+
+        app = coffee.fork(eggBin, [ 'start', '--port=7007', '--workers=2', fixturePath ]);
+
+        yield sleep(waitTime);
+        assert(/Error: spawn node .+ fail, exit code: 1/.test(app.stderr));
+        srv.close();
       });
     });
 
@@ -271,7 +296,8 @@ describe('test/start.test.js', () => {
         let result = yield httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
         result = yield httpclient.request('http://127.0.0.1:7001/path');
-        assert(result.data.toString().match(new RegExp(`^${fixturePath}/node_modules/.bin${path.delimiter}`)));
+        const appBinPath = path.join(fixturePath, 'node_modules/.bin');
+        assert(result.data.toString().startsWith(`${appBinPath}${path.delimiter}`));
       });
     });
 
@@ -402,7 +428,7 @@ describe('test/start.test.js', () => {
   describe('start with daemon', () => {
     let cwd;
     beforeEach(function* () {
-      yield utils.cleanup(cwd);
+      if (cwd) yield utils.cleanup(cwd);
       yield rimraf(logDir);
       yield mkdirp(logDir);
       yield fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
@@ -410,7 +436,7 @@ describe('test/start.test.js', () => {
     });
     afterEach(function* () {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
-        // .debug()
+      // .debug()
         .end();
       yield utils.cleanup(cwd);
     });
@@ -418,7 +444,7 @@ describe('test/start.test.js', () => {
     it('should start custom-framework', function* () {
       cwd = fixturePath;
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', '--port=7002', cwd ])
-        // .debug()
+      // .debug()
         .expect('stdout', /Starting custom-framework application/)
         .expect('stdout', /custom-framework started on http:\/\/127\.0\.0\.1:7002/)
         .expect('code', 0)
@@ -442,7 +468,7 @@ describe('test/start.test.js', () => {
     it('should start default egg', function* () {
       cwd = path.join(__dirname, 'fixtures/egg-app');
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', cwd ])
-        // .debug()
+      // .debug()
         .expect('stdout', /Starting egg application/)
         .expect('stdout', /egg started on http:\/\/127\.0\.0\.1:7001/)
         .expect('code', 0)
@@ -455,7 +481,7 @@ describe('test/start.test.js', () => {
 
     after(function* () {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
-        // .debug()
+      // .debug()
         .end();
       yield utils.cleanup(cwd);
     });
@@ -463,7 +489,7 @@ describe('test/start.test.js', () => {
     it('should status check success, exit with 0', function* () {
       mm(process.env, 'WAIT_TIME', 5000);
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
-        // .debug()
+      // .debug()
         .expect('stdout', /Wait Start: 5.../)
         .expect('stdout', /custom-framework started/)
         .expect('code', 0)
@@ -474,12 +500,14 @@ describe('test/start.test.js', () => {
       mm(process.env, 'WAIT_TIME', 5000);
       mm(process.env, 'ERROR', 'error message');
 
-      const stderr = path.join(homePath, 'logs/master-stderr.log');
+      let stderr = path.join(homePath, 'logs/master-stderr.log');
+      if (isWin) stderr = stderr.replace(/\\/g, '\\\\');
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd })
-        // .debug()
-        .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd });
+      // app.debug();
+      // TODO: find a windows replacement for tail command
+      if (!isWin) app.expect('stderr', /nodejs.Error: error message/);
+      yield app.expect('stderr', new RegExp(`Start got error, see ${stderr}`))
         .expect('code', 0)
         .end();
     });
@@ -488,12 +516,14 @@ describe('test/start.test.js', () => {
       mm(process.env, 'WAIT_TIME', 5000);
       mm(process.env, 'ERROR', 'error message');
 
-      const stderr = path.join(homePath, 'logs/master-stderr.log');
+      let stderr = path.join(homePath, 'logs/master-stderr.log');
+      if (isWin) stderr = stderr.replace(/\\/g, '\\\\');
 
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd })
-        // .debug()
-        .expect('stderr', /nodejs.Error: error message/)
-        .expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd });
+      // app.debug()
+      // TODO: find a windows replacement for tail command
+      if (!isWin) app.expect('stderr', /nodejs.Error: error message/);
+      yield app.expect('stderr', new RegExp(`Start got error, see ${stderr}`))
         .expect('code', 1)
         .end();
     });
@@ -502,12 +532,11 @@ describe('test/start.test.js', () => {
       mm(process.env, 'WAIT_TIME', 10000);
 
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--timeout=5000' ], { cwd })
-        // .debug()
+      // .debug()
         .expect('stdout', /Wait Start: 1.../)
         .expect('stderr', /Start failed, 5s timeout/)
         .expect('code', 1)
         .end();
     });
-
   });
 });

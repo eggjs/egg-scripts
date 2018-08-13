@@ -10,6 +10,7 @@ const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
+const isWin = process.platform === 'win32';
 
 describe('test/stop.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
@@ -60,10 +61,14 @@ describe('test/stop.test.js', () => {
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
 
-      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(app.stdout.includes('[master] exit with code:0'));
-      assert(app.stdout.includes('[app_worker] exit with code:0'));
-      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] exit with code:0'));
+        assert(app.stdout.includes('[app_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      }
+
       assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
       assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
     });
@@ -98,9 +103,12 @@ describe('test/stop.test.js', () => {
       // master log
       const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
 
-      assert(stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(stdout.includes('[master] exit with code:0'));
-      assert(stdout.includes('[app_worker] exit with code:0'));
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(stdout.includes('[master] exit with code:0'));
+        assert(stdout.includes('[app_worker] exit with code:0'));
+      }
 
       yield coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
@@ -162,10 +170,14 @@ describe('test/stop.test.js', () => {
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
 
-      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(app.stdout.includes('[master] exit with code:0'));
-      assert(app.stdout.includes('[app_worker] exit with code:0'));
-      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] exit with code:0'));
+        assert(app.stdout.includes('[app_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      }
+
       assert(killer.stdout.includes('[egg-scripts] stopping egg application with --title=example'));
       assert(killer.stdout.match(/got master pid \["\d+\"\]/i));
     });
@@ -214,17 +226,26 @@ describe('test/stop.test.js', () => {
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
-      assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(app.stdout.includes('[master] exit with code:0'));
-      assert(app.stdout.includes('[app_worker] exit with code:0'));
-      // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] exit with code:0'));
+        assert(app.stdout.includes('[app_worker] exit with code:0'));
+        // assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      }
+
       assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
       assert(killer.stdout.match(/got master pid \["\d+\","\d+\"\]/i));
 
       assert(!app2.stdout.includes('exist by env'));
-      assert(app2.stdout.includes('[master] receive signal SIGTERM, closing'));
-      assert(app2.stdout.includes('[master] exit with code:0'));
-      assert(app2.stdout.includes('[app_worker] exit with code:0'));
+
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app2.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app2.stdout.includes('[master] exit with code:0'));
+        assert(app2.stdout.includes('[app_worker] exit with code:0'));
+      }
     });
   });
 
@@ -232,13 +253,23 @@ describe('test/stop.test.js', () => {
     const baseDir = path.join(__dirname, 'fixtures/tmp');
 
     beforeEach(function* () {
-      yield fs.symlink(fixturePath, baseDir);
+      // if we can't create a symlink, skip the test
+      try {
+        yield fs.symlink(fixturePath, baseDir, 'dir');
+      } catch (err) {
+        // may get Error: EPERM: operation not permitted on windows
+        console.log(`test skiped, can't create symlink: ${err}`);
+        this.skip();
+      }
+
+      // *unix get the real path of symlink, but windows wouldn't
+      const appPathInRegexp = isWin ? baseDir.replace(/\\/g, '\\\\') : fixturePath;
 
       yield utils.cleanup(fixturePath);
       yield rimraf(logDir);
       yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2' ], { cwd: baseDir })
         .debug()
-        .expect('stdout', new RegExp(`Starting custom-framework application at ${fixturePath}`))
+        .expect('stdout', new RegExp(`Starting custom-framework application at ${appPathInRegexp}`))
         .expect('code', 0)
         .end();
 

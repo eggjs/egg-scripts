@@ -10,6 +10,7 @@ const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
+const isWin = process.platform === 'win32';
 
 describe('test/ts.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
@@ -28,7 +29,7 @@ describe('test/ts.test.js', () => {
     beforeEach(function* () {
       fixturePath = path.join(__dirname, 'fixtures/ts');
       yield utils.cleanup(fixturePath);
-      const result = cp.spawnSync('npm', [ 'run', 'build' ], { cwd: fixturePath });
+      const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
@@ -48,7 +49,7 @@ describe('test/ts.test.js', () => {
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
-      assert(result.data.stack.includes('app/controller/home.ts:6:13'));
+      assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
     it('--typescript', function* () {
@@ -62,7 +63,7 @@ describe('test/ts.test.js', () => {
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
-      assert(result.data.stack.includes('app/controller/home.ts:6:13'));
+      assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
     it('--sourcemap', function* () {
@@ -76,7 +77,7 @@ describe('test/ts.test.js', () => {
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
-      assert(result.data.stack.includes('app/controller/home.ts:6:13'));
+      assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
   });
 
@@ -85,7 +86,7 @@ describe('test/ts.test.js', () => {
     beforeEach(function* () {
       fixturePath = path.join(__dirname, 'fixtures/ts-pkg');
       yield utils.cleanup(fixturePath);
-      const result = cp.spawnSync('npm', [ 'run', 'build' ], { cwd: fixturePath });
+      const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
@@ -105,7 +106,7 @@ describe('test/ts.test.js', () => {
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
-      assert(result.data.stack.includes('app/controller/home.ts:6:13'));
+      assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
   });
 });
