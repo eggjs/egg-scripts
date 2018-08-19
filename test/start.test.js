@@ -307,6 +307,7 @@ describe('test/start.test.js', () => {
       before(function* () {
         yield utils.cleanup(fixturePath);
         yield rimraf(logDir);
+        yield rimraf(path.join(fixturePath, 'start-fail'));
         yield mkdirp(logDir);
       });
 
@@ -315,6 +316,7 @@ describe('test/start.test.js', () => {
         yield utils.cleanup(fixturePath);
         yield rimraf(path.join(fixturePath, 'stdout.log'));
         yield rimraf(path.join(fixturePath, 'stderr.log'));
+        yield rimraf(path.join(fixturePath, 'start-fail'));
       });
 
       it('should start', function* () {
@@ -331,6 +333,30 @@ describe('test/start.test.js', () => {
 
         content = yield fs.readFile(stderr, 'utf-8');
         assert(content === '');
+      });
+
+      it('should start with insecurity --stderr argument', function* () {
+        const cwd = path.join(__dirname, 'fixtures/status');
+        mm(process.env, 'ERROR', 'error message');
+
+        const stdout = path.join(fixturePath, 'start-fail/stdout.log');
+        const stderr = path.join(fixturePath, 'start-fail/stderr.log');
+        const malicious = path.join(fixturePath, 'start-fail/malicious');
+        app = coffee.fork(eggBin, [
+          'start', '--workers=1', '--daemon', `--stdout=${stdout}`,
+          `--stderr=${stderr}; touch ${malicious}`,
+          cwd,
+        ]);
+        // app.debug();
+
+        yield sleep(waitTime);
+
+        const content = yield fs.readFile(stdout, 'utf-8');
+        assert(!content.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
+        let exists = yield fs.exists(stderr);
+        assert(!exists);
+        exists = yield fs.exists(malicious);
+        assert(!exists);
       });
     });
 
@@ -520,10 +546,11 @@ describe('test/start.test.js', () => {
       if (isWin) stderr = stderr.replace(/\\/g, '\\\\');
 
       const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1' ], { cwd });
-      // app.debug()
+      // app.debug();
       // TODO: find a windows replacement for tail command
       if (!isWin) app.expect('stderr', /nodejs.Error: error message/);
       yield app.expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+        .expect('stderr', /Got error when startup/)
         .expect('code', 1)
         .end();
     });
