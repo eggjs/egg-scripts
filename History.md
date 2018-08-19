@@ -1,4 +1,10 @@
 
+2.8.1 / 2018-08-19
+==================
+
+**fixes**
+  * [[`b98fd03`](http://github.com/eggjs/egg-scripts/commit/b98fd03d1e3aaed68004b881f0b3d42fe47341dd)] - fix: use execFile instead of exec for security reason (#26) (fengmk2 <<fengmk2@gmail.com>>)
+
 2.8.0 / 2018-08-10
 ==================
 
