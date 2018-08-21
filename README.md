@@ -71,3 +71,12 @@ $ eggctl stop [--title=example]
 
 - **Options**
   - `title` - process title description, use for kill grep.
+
+## Questions & Suggestions
+
+Please open an issue [here](https://github.com/eggjs/egg/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).
+
+## License
+
+[MIT](LICENSE)
+
