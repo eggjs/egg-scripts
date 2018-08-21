@@ -50,7 +50,8 @@
     "bin"
   ],
   "ci": {
-    "version": "6, 8, 10"
+    "version": "6, 8, 10",
+    "license": true
   },
   "bug": {
     "url": "https://github.com/eggjs/egg/issues"
