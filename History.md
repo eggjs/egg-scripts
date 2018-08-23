@@ -1,4 +1,13 @@
 
+2.9.0 / 2018-08-23
+==================
+
+**features**
+  * [[`1367883`](http://github.com/eggjs/egg-scripts/commit/1367883804e5ab1ece88831ea4d1a934ee757f81)] - feat: add ipc channel in nonDaemon mode (#28) (Khaidi Chu <<i@2333.moe>>)
+
+**others**
+  * [[`262ef4c`](http://github.com/eggjs/egg-scripts/commit/262ef4c97179dbf6f8de2eb0547eef4cbc56bf92)] - chore: add license and issues link (#27) (Haoliang Gao <<sakura9515@gmail.com>>)
+
 2.8.1 / 2018-08-19
 ==================
 
