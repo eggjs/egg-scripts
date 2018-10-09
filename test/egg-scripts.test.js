@@ -10,7 +10,7 @@ describe('test/egg-scripts.test.js', () => {
     app = coffee.fork(eggBin, [ '--help' ]);
     app
       // .debug()
-      .expect(/Usage: egg-scripts/)
+      .expect('stdout', /Usage: egg-scripts/)
       .expect('code', 0)
       .end(done);
   });
