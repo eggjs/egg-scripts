@@ -381,6 +381,41 @@ describe('test/start.test.js', () => {
       });
     });
 
+    describe('--node', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--framework=yadan', '--workers=2', `--node=${process.execPath}`, fixturePath ]);
+        // app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
+        const result = yield httpclient.request('http://127.0.0.1:7001');
+        assert(result.data.toString() === 'hi, yadan');
+      });
+
+      it('should error if node path invalid', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--framework=yadan', '--workers=2', '--node=invalid', fixturePath ]);
+        // app.debug();
+        app.expect('code', 1);
+
+        yield sleep(3000);
+        assert(app.stderr.includes('spawn invalid ENOENT'));
+      });
+    });
+
     describe('read cluster config', () => {
       let app;
       let fixturePath;
