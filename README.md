@@ -57,6 +57,7 @@ $ eggctl start [options] [baseDir]
   - `timeout` - the maximum timeout when app starts, default to 300s.
   - `ignore-stderr` - whether ignore stderr when app starts.
   - `sourcemap` / `typescript` / `ts` - provides source map support for stack traces.
+  - `node` - customize node command path, default will find node from $PATH
 
 ### stop
 
