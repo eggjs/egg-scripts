@@ -17,3 +17,4 @@ module.exports = exports = EggScripts;
 exports.Command = Command;
 exports.StartCommand = require('./lib/cmd/start');
 exports.StopCommand = require('./lib/cmd/stop');
+exports.LsCommand = require('./lib/cmd/ls');
