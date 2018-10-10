@@ -1,4 +1,14 @@
 
+2.10.0 / 2018-10-10
+==================
+
+**fixes**
+  * [[`4768950`](http://github.com/eggjs/egg-scripts/commit/4768950d29398031fd6ae129a981c60e308bff0a)] - fix: replace command by args in ps (#29) (Baffin Lee <<baffinlee@gmail.com>>)
+
+**others**
+  * [[`f31efb9`](http://github.com/eggjs/egg-scripts/commit/f31efb9133c5edc6176371ca725198f1b43b9aab)] -  feat: support customize node path (#32) (Yiyu He <<dead_horse@qq.com>>)
+  * [[`c2479dc`](http://github.com/eggjs/egg-scripts/commit/c2479dc6416386b654fc6e918a4dbd575cc0639e)] - chore: update version (TZ <<atian25@qq.com>>)
+
 2.9.1 / 2018-08-24
 ==================
 
