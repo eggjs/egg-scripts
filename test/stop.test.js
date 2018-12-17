@@ -152,6 +152,24 @@ describe('test/stop.test.js', () => {
       yield utils.cleanup(fixturePath);
     });
 
+    it('shoud stop only if the title matches exactly', function* () {
+      // Because of'exmaple'.inclues('exmap') === true，if egg-scripts <= 2.1.0 and you run `.. stop --title=exmap`，the process with 'title:example' will also be killed unexpectedly
+      yield coffee.fork(eggBin, [ 'stop', '--title=examp', fixturePath ])
+        .debug()
+        .expect('stdout', /\[egg-scripts] stopping egg application with --title=examp/)
+        .expect('stderr', /can't detect any running egg process/)
+        .expect('code', 0)
+        .end();
+
+      // stop only if the title matches exactly
+      yield coffee.fork(eggBin, [ 'stop', '--title=example', fixturePath ])
+        .debug()
+        .expect('stdout', /\[egg-scripts] stopping egg application with --title=example/)
+        .expect('stdout', /\[egg-scripts\] got master pid \[/)
+        .expect('code', 0)
+        .end();
+    });
+
     it('should stop', function* () {
       yield coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
         .debug()
