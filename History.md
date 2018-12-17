@@ -1,4 +1,10 @@
 
+2.11.0 / 2018-12-17
+===================
+
+  * feat(stop): only sleep when master process exists (#34)
+  * fix: stop process only if the title matches exactly (#35)
+
 2.10.0 / 2018-10-10
 ==================
 
