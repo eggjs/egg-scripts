@@ -25,7 +25,6 @@
     "coffee": "^5.1.1",
     "egg": "^2.14.1",
     "egg-bin": "^4.9.0",
-    "egg-ci": "^1.10.0",
     "eslint": "^5.10.0",
     "eslint-config-egg": "^7.1.0",
     "mm": "^2.4.1",
@@ -50,10 +49,6 @@
     "lib",
     "bin"
   ],
-  "ci": {
-    "version": "6, 8, 10",
-    "license": true
-  },
   "bug": {
     "url": "https://github.com/eggjs/egg/issues"
   },
