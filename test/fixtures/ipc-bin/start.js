@@ -1,7 +1,5 @@
 'use strict';
 
-const co = require('co');
-
 const BaseStartCommand = require('../../../lib/cmd/start');
 
 class StartCommand extends BaseStartCommand {
@@ -19,7 +17,7 @@ class StartCommand extends BaseStartCommand {
 const start = new StartCommand();
 
 
-(async function () {
+(async function() {
   await start.run({
     argv: {
       framework: 'custom-framework',

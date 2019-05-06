@@ -19,10 +19,10 @@ describe('test/stop.test.js', () => {
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
 
-  before(async function () {
+  before(async function() {
     await mkdirp(homePath);
   });
-  after(async function () {
+  after(async function() {
     await rimraf(homePath);
   });
   beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
@@ -32,7 +32,7 @@ describe('test/stop.test.js', () => {
     let app;
     let killer;
 
-    beforeEach(async function () {
+    beforeEach(async function() {
       await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
       // app.debug();
@@ -45,12 +45,12 @@ describe('test/stop.test.js', () => {
       assert(result.data.toString() === 'hi, egg');
     });
 
-    afterEach(async function () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
       await utils.cleanup(fixturePath);
     });
 
-    it('should stop',async function () {
+    it('should stop', async function() {
       killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
       killer.debug();
       killer.expect('code', 0);
@@ -75,7 +75,7 @@ describe('test/stop.test.js', () => {
   });
 
   describe('stop with daemon', () => {
-    beforeEach(async function () {
+    beforeEach(async function() {
       await utils.cleanup(fixturePath);
       await rimraf(logDir);
       await coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ])
@@ -86,11 +86,11 @@ describe('test/stop.test.js', () => {
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
-    afterEach(async function () {
+    afterEach(async function() {
       await utils.cleanup(fixturePath);
     });
 
-    it('should stop',async function () {
+    it('should stop', async function() {
       await coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application/)
@@ -119,7 +119,7 @@ describe('test/stop.test.js', () => {
   });
 
   describe('stop with not exist', () => {
-    it('should work',async function () {
+    it('should work', async function() {
       await utils.cleanup(fixturePath);
       await coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
@@ -134,7 +134,7 @@ describe('test/stop.test.js', () => {
     let app;
     let killer;
 
-    beforeEach(async function () {
+    beforeEach(async function() {
       await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
       // app.debug();
@@ -147,12 +147,12 @@ describe('test/stop.test.js', () => {
       assert(result.data.toString() === 'hi, egg');
     });
 
-    afterEach(async function () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
       await utils.cleanup(fixturePath);
     });
 
-    it('shoud stop only if the title matches exactly',async function () {
+    it('shoud stop only if the title matches exactly', async function() {
       // Because of'exmaple'.inclues('exmap') === true，if egg-scripts <= 2.1.0 and you run `.. stop --title=exmap`，the process with 'title:example' will also be killed unexpectedly
       await coffee.fork(eggBin, [ 'stop', '--title=examp', fixturePath ])
         .debug()
@@ -170,7 +170,7 @@ describe('test/stop.test.js', () => {
         .end();
     });
 
-    it('should stop',async function () {
+    it('should stop', async function() {
       await coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application with --title=random/)
@@ -206,7 +206,7 @@ describe('test/stop.test.js', () => {
     let app2;
     let killer;
 
-    beforeEach(async function () {
+    beforeEach(async function() {
       await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
       // app.debug();
@@ -228,13 +228,13 @@ describe('test/stop.test.js', () => {
       assert(result2.data.toString() === 'hi, egg');
     });
 
-    afterEach(async function () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
       app2.proc.kill('SIGTERM');
       await utils.cleanup(fixturePath);
     });
 
-    it('should stop',async function () {
+    it('should stop', async function() {
       killer = coffee.fork(eggBin, [ 'stop' ], { cwd: fixturePath });
       killer.debug();
       killer.expect('code', 0);
@@ -270,7 +270,7 @@ describe('test/stop.test.js', () => {
   describe('stop with symlink', () => {
     const baseDir = path.join(__dirname, 'fixtures/tmp');
 
-    beforeEach(async function () {
+    beforeEach(async function() {
       // if we can't create a symlink, skip the test
       try {
         await fs.symlink(fixturePath, baseDir, 'dir');
@@ -295,12 +295,12 @@ describe('test/stop.test.js', () => {
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
-    afterEach(async function () {
+    afterEach(async function() {
       await utils.cleanup(fixturePath);
       await rimraf(baseDir);
     });
 
-    it('should stop',async function () {
+    it('should stop', async function() {
       await rimraf(baseDir);
       await fs.symlink(path.join(__dirname, 'fixtures/status'), baseDir);
 

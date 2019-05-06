@@ -29,17 +29,17 @@ describe('test/start.test.js', () => {
   afterEach(mm.restore);
 
   describe('start without daemon', () => {
-    describe('full path',() => {
+    describe('full path', () => {
       let app;
 
-      before(async ()=>{await utils.cleanup(fixturePath)});
+      before(async () => { await utils.cleanup(fixturePath); });
 
-      afterEach(async function () {
+      afterEach(async function() {
         app.proc.kill('SIGTERM');
         await utils.cleanup(fixturePath);
       });
 
-      it('should start',async function () {
+      it('should start', async function() {
         app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
         // app.debug();
         app.expect('code', 0);

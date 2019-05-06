@@ -26,19 +26,19 @@ describe('test/ts.test.js', () => {
 
   describe('should display correct stack traces', () => {
     let app;
-    beforeEach(async function () {
+    beforeEach(async function() {
       fixturePath = path.join(__dirname, 'fixtures/ts');
       await utils.cleanup(fixturePath);
       const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
-    afterEach(async function () {
+    afterEach(async function() {
       app && app.proc.kill('SIGTERM');
       await utils.cleanup(fixturePath);
     });
 
-    it('--ts',async function () {
+    it('--ts', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--ts', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
@@ -52,7 +52,7 @@ describe('test/ts.test.js', () => {
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
-    it('--typescript',async function () {
+    it('--typescript', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--typescript', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
@@ -66,7 +66,7 @@ describe('test/ts.test.js', () => {
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
-    it('--sourcemap',async function () {
+    it('--sourcemap', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--sourcemap', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
@@ -83,19 +83,19 @@ describe('test/ts.test.js', () => {
 
   describe('pkg.egg.typescript', () => {
     let app;
-    beforeEach(async function () {
+    beforeEach(async function() {
       fixturePath = path.join(__dirname, 'fixtures/ts-pkg');
       await utils.cleanup(fixturePath);
       const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
-    afterEach(async function () {
+    afterEach(async function() {
       app && app.proc.kill('SIGTERM');
       await utils.cleanup(fixturePath);
     });
 
-    it('should got correct stack',async function () {
+    it('should got correct stack', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
