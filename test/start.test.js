@@ -29,24 +29,22 @@ describe('test/start.test.js', () => {
   afterEach(mm.restore);
 
   describe('start without daemon', () => {
-    describe('full path', () => {
+    describe('full path',() => {
       let app;
 
-      before(function* () {
-        yield utils.cleanup(fixturePath);
-      });
+      before(async ()=>{await utils.cleanup(fixturePath)});
 
-      afterEach(function* () {
+      afterEach(async function () {
         app.proc.kill('SIGTERM');
-        yield utils.cleanup(fixturePath);
+        await utils.cleanup(fixturePath);
       });
 
-      it('should start', function* () {
+      it('should start',async function () {
         app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
         // app.debug();
         app.expect('code', 0);
 
-        yield sleep(waitTime);
+        await sleep(waitTime);
 
         assert(app.stderr === '');
         assert(app.stdout.includes('--title=egg-server-example'));
@@ -54,7 +52,7 @@ describe('test/start.test.js', () => {
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         assert(app.stdout.includes('app_worker#2:'));
         assert(!app.stdout.includes('app_worker#3:'));
-        const result = yield httpclient.request('http://127.0.0.1:7001');
+        const result = await httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
       });
 
