@@ -339,12 +339,9 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', async function() {
-        const stdout = path.join(fixturePath, 'stdout.log');
-        const stderr = path.join(fixturePath, 'stderr.log');
-        app = coffee.fork(eggBin, [ 'start', '--workers=1', '--daemon', `--stdout=${stdout}`, `--stderr=${stderr}`, fixturePath ]);
-        // app.debug();
-        app.expect('code', 0);
-
+        const stdoutFile = path.join(fixturePath, 'stdout.log');
+        const stderrFile = path.join(fixturePath, 'stderr.log');
+        const { stdout, stderr, code } = await coffee.fork(eggBin, [ 'start', '--workers=1', '--daemon', `--stdout=${stdoutFile}`, `--stderr=${stderrFile}`, fixturePath ]).end();
         await sleep(waitTime);
 
         let content = await fs.readFile(stdout, 'utf-8');
