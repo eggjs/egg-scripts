@@ -339,9 +339,9 @@ describe('test/start.test.js', () => {
       });
 
       it('should start', async function() {
-        const stdoutFile = path.join(fixturePath, 'stdout.log');
-        const stderrFile = path.join(fixturePath, 'stderr.log');
-        const { stdout, stderr, code } = await coffee.fork(eggBin, [ 'start', '--workers=1', '--daemon', `--stdout=${stdoutFile}`, `--stderr=${stderrFile}`, fixturePath ]).end();
+        const stdout = path.join(fixturePath, 'stdout.log');
+        const stderr = path.join(fixturePath, 'stderr.log');
+        const { code } = await coffee.fork(eggBin, [ 'start', '--workers=1', '--daemon', `--stdout=${stdout}`, `--stderr=${stderr}`, fixturePath ]).end();
         assert(code === 0);
         await sleep(waitTime);
 
