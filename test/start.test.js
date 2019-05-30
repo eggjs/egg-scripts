@@ -600,6 +600,7 @@ describe('test/start.test.js', () => {
       cwd = fixturePath;
       const app = coffee.fork(eggBin, [ 'start', '--daemon', '--windowsHide', '--workers=2', '--port=7002', cwd ]);
       app.expect('code', 0);
+      await sleep(waitTime);
       assert(app.stdout.includes('"windowsHide":true'));
     });
   });
