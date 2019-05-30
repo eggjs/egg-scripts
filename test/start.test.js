@@ -598,7 +598,7 @@ describe('test/start.test.js', () => {
 
     it('should start with --windowsHide', async function() {
       cwd = fixturePath;
-      let app= coffee.fork(eggBin, [ 'start', '--daemon', '--windowsHide', '--workers=2', '--port=7002', cwd ]);
+      const app = coffee.fork(eggBin, [ 'start', '--daemon', '--windowsHide', '--workers=2', '--port=7002', cwd ]);
       app.expect('code', 0);
       assert(app.stdout.includes('"windowsHide":true'));
     });
