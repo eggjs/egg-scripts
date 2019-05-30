@@ -1,12 +1,10 @@
 'use strict';
 
-const co = require('co');
-
 const BaseStartCommand = require('../../../lib/cmd/start');
 
 class StartCommand extends BaseStartCommand {
-  * run(context) {
-    yield super.run(context);
+  async run(context) {
+    await super.run(context);
     const child = this.child;
     child.on('message', msg => {
       if (msg && msg.action === 'egg-ready') {
@@ -18,8 +16,9 @@ class StartCommand extends BaseStartCommand {
 
 const start = new StartCommand();
 
-co(function* () {
-  yield start.run({
+
+(async function() {
+  await start.run({
     argv: {
       framework: 'custom-framework',
       _: [ process.env.BASE_DIR ],
@@ -32,5 +31,5 @@ co(function* () {
       PATH: process.env.PATH,
     },
   });
-});
+})();
 

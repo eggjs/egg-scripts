@@ -4,8 +4,8 @@ const helper = require('../lib/helper');
 const sleep = require('mz-modules/sleep');
 const isWin = process.platform === 'win32';
 
-exports.cleanup = function* (baseDir) {
-  const processList = yield helper.findNodeProcess(x => {
+exports.cleanup = async function(baseDir) {
+  const processList = await helper.findNodeProcess(x => {
     const dir = isWin ? baseDir.replace(/\\/g, '\\\\') : baseDir;
     const prefix = isWin ? '\\"baseDir\\":\\"' : '"baseDir":"';
     return x.cmd.includes(`${prefix}${dir}`);
@@ -36,6 +36,6 @@ exports.cleanup = function* (baseDir) {
       }
     }
 
-    yield sleep('5s');
+    await sleep('5s');
   }
 };

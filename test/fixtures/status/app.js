@@ -7,7 +7,7 @@ module.exports = app => {
     app.logger.error(new Error(process.env.ERROR));
   }
 
-  app.beforeStart(function* () {
-    yield sleep(process.env.WAIT_TIME);
+  app.beforeStart(async function() {
+    await sleep(process.env.WAIT_TIME);
   });
 };
