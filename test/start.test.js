@@ -580,6 +580,30 @@ describe('test/start.test.js', () => {
     });
   });
 
+  describe('start with windowsHide', () => {
+    let cwd;
+    beforeEach(async function() {
+      if (cwd) await utils.cleanup(cwd);
+      await rimraf(logDir);
+      await mkdirp(logDir);
+      await fs.writeFile(path.join(logDir, 'master-stdout.log'), 'just for test');
+      await fs.writeFile(path.join(logDir, 'master-stderr.log'), 'just for test');
+    });
+    afterEach(async function() {
+      await coffee.fork(eggBin, [ 'stop', cwd ])
+      // .debug()
+        .end();
+      await utils.cleanup(cwd);
+    });
+
+    it('should start with --windowsHide', async function() {
+      cwd = fixturePath;
+      let app= coffee.fork(eggBin, [ 'start', '--daemon', '--windowsHide', '--workers=2', '--port=7002', cwd ]);
+      app.expect('code', 0);
+      assert(app.stdout.includes('"windowsHide":true'));
+    });
+  });
+
   describe('check status', () => {
     const cwd = path.join(__dirname, 'fixtures/status');
 
