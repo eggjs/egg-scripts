@@ -10,6 +10,7 @@ const coffee = require('coffee');
 const httpclient = require('urllib');
 const mm = require('mm');
 const utils = require('./utils');
+const awaitEvent = require('await-event');
 const isWin = process.platform === 'win32';
 
 describe('test/start.test.js', () => {
@@ -99,8 +100,8 @@ describe('test/start.test.js', () => {
         app = coffee.fork(eggBin, [ 'start', '--port=7007', '--workers=2', fixturePath ]);
 
         yield sleep(waitTime);
-        assert(/Error: spawn node .+ fail, exit code: 1/.test(app.stderr));
         srv.close();
+        assert(app.code === 1);
       });
     });
 
@@ -529,6 +530,27 @@ describe('test/start.test.js', () => {
         assert(!app.stdout.includes('app_worker#3:'));
         const result = yield httpclient.request('http://127.0.0.1:7002');
         assert(result.data.toString().startsWith(`hi, ${expectPATH}`));
+      });
+    });
+
+    describe('kill command', () => {
+      let app;
+
+      before(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should wait child process exit', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--port=7007', '--workers=2', fixturePath ]);
+        yield sleep(waitTime);
+        const exitEvent = awaitEvent(app.proc, 'exit');
+        app.proc.kill('SIGTERM');
+        const code = yield exitEvent;
+        assert(code === 0);
       });
     });
   });
