@@ -1,4 +1,13 @@
 
+2.11.1 / 2019-10-10
+==================
+
+**fixes**
+  * [[`de61980`](http://github.com/eggjs/egg-scripts/commit/de61980f772c8a24010d3f078658f8c55b072067)] - fix: start command should exit after child process exit when no daemon mode (#39) (killa <<killa123@126.com>>)
+
+**others**
+  * [[`7ae9cb0`](http://github.com/eggjs/egg-scripts/commit/7ae9cb054cb91ea7ac1e615e1e3a7fcdaba5f980)] - test: add egg@1 and egg@2 with travis (#36) (Maledong <<maledong_github@outlook.com>>)
+
 2.11.0 / 2018-12-17
 ===================
 
