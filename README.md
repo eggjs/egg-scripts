@@ -7,7 +7,7 @@ deploy tool for egg project.
 ## Install
 
 ```bash
-$ npm i egg-scripts --save
+$ npm i egg-scriptsx --save
 ```
 
 ## Usage
@@ -18,7 +18,8 @@ Add `eggctl` to `package.json` scripts:
 {
   "scripts": {
     "start": "eggctl start --daemon",
-    "stop": "eggctl stop"
+    "stop": "eggctl stop",
+    "reload": "eggctl reload --type=all"
   }
 }
 ```
@@ -27,6 +28,7 @@ Then run as:
 
 - `npm start`
 - `npm stop`
+- `npm run reload`
 
 **Note:** `egg-scripts` is not recommended to install global, you should install and use it as npm scripts.
 
