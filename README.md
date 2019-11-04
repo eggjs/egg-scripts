@@ -30,7 +30,7 @@ Then run as:
 - `npm stop`
 - `npm run reload`
 
-**Note:** `egg-scripts` is not recommended to install global, you should install and use it as npm scripts.
+**Note:** `egg-scriptsx` is not recommended to install global, you should install and use it as npm scripts.
 
 ## Command
 

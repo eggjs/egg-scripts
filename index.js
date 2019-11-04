@@ -6,7 +6,7 @@ const Command = require('./lib/command');
 class EggScripts extends Command {
   constructor(rawArgv) {
     super(rawArgv);
-    this.usage = 'Usage: egg-scripts [command] [options]';
+    this.usage = 'Usage: egg-scriptsx [command] [options]';
 
     // load directory
     this.load(path.join(__dirname, 'lib/cmd'));

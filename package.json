@@ -1,11 +1,11 @@
 {
   "name": "egg-scriptsx",
-  "version": "2.11.2",
+  "version": "2.11.3",
   "description": "deploy tool for egg project",
   "main": "index.js",
   "bin": {
-    "egg-scripts": "bin/egg-scripts.js",
-    "eggctl": "bin/egg-scripts.js"
+    "egg-scriptsx": "bin/egg-scriptsx.js",
+    "eggctlx": "bin/egg-scriptsx.js"
   },
   "dependencies": {
     "await-event": "^2.1.0",
