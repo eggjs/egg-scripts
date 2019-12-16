@@ -1,4 +1,10 @@
 
+2.12.0 / 2019-12-16
+==================
+
+**features**
+  * [[`20483fd`](http://github.com/eggjs/egg-scripts/commit/20483fd56ce51238431fb095ede1c768a99470f2)] - feat: support eggScriptsConfig in package.json (#41) (Yiyu He <<dead_horse@qq.com>>)
+
 2.11.1 / 2019-10-10
 ==================
 
