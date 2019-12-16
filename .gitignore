@@ -8,3 +8,4 @@ run/
 *.swp
 test/fixtures/ts/app/controller/home.js
 test/fixtures/ts-pkg/app/controller/home.js
+!test/fixtures/**/node_modules
