@@ -73,6 +73,20 @@ $ eggctl stop [--title=example]
 - **Options**
   - `title` - process title description, use for kill grep.
 
+## Options in `package.json`
+
+In addition to the command line specification, options can also be specified in `package.json`. However, the command line designation takes precedence.
+
+```json
+{
+  "eggScriptsConfig": {
+    "port": 1234,
+    "ignore-stderr": true
+  }
+}
+```
+
+
 ## Questions & Suggestions
 
 Please open an issue [here](https://github.com/eggjs/egg/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc).

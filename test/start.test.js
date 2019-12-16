@@ -607,11 +607,14 @@ describe('test/start.test.js', () => {
   });
 
   describe('check status', () => {
-    const cwd = path.join(__dirname, 'fixtures/status');
+    let cwd;
+    beforeEach(() => {
+      cwd = path.join(__dirname, 'fixtures/status');
+    });
 
     after(function* () {
       yield coffee.fork(eggBin, [ 'stop', cwd ])
-      // .debug()
+        // .debug()
         .end();
       yield utils.cleanup(cwd);
     });
@@ -634,6 +637,23 @@ describe('test/start.test.js', () => {
       if (isWin) stderr = stderr.replace(/\\/g, '\\\\');
 
       const app = coffee.fork(eggBin, [ 'start', '--daemon', '--workers=1', '--ignore-stderr' ], { cwd });
+      // app.debug();
+      // TODO: find a windows replacement for tail command
+      if (!isWin) app.expect('stderr', /nodejs.Error: error message/);
+      yield app.expect('stderr', new RegExp(`Start got error, see ${stderr}`))
+        .expect('code', 0)
+        .end();
+    });
+
+    it('should status check fail `--ignore-stderr` in package.json, exit with 0', function* () {
+      cwd = path.join(__dirname, 'fixtures/egg-scripts-config');
+      mm(process.env, 'WAIT_TIME', 5000);
+      mm(process.env, 'ERROR', 'error message');
+
+      let stderr = path.join(homePath, 'logs/master-stderr.log');
+      if (isWin) stderr = stderr.replace(/\\/g, '\\\\');
+
+      const app = coffee.fork(eggBin, [ 'start' ], { cwd });
       // app.debug();
       // TODO: find a windows replacement for tail command
       if (!isWin) app.expect('stderr', /nodejs.Error: error message/);
