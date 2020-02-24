@@ -72,6 +72,7 @@ $ eggctl stop [--title=example]
 
 - **Options**
   - `title` - process title description, use for kill grep.
+  - `timeout` - the maximum timeout when app stop, default to 5s.
 
 ## Options in `package.json`
 
