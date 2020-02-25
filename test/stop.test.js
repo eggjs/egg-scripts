@@ -15,6 +15,7 @@ const isWin = process.platform === 'win32';
 describe('test/stop.test.js', () => {
   const eggBin = require.resolve('../bin/egg-scripts.js');
   const fixturePath = path.join(__dirname, 'fixtures/example');
+  const timeoutPath = path.join(__dirname, 'fixtures/stop-timeout');
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
   const waitTime = '10s';
@@ -264,6 +265,74 @@ describe('test/stop.test.js', () => {
         assert(app2.stdout.includes('[master] exit with code:0'));
         assert(app2.stdout.includes('[app_worker] exit with code:0'));
       }
+    });
+  });
+
+  describe('stop all with timeout', function() {
+    let app;
+    let killer;
+    this.timeout(12000);
+    beforeEach(function* () {
+      yield utils.cleanup(timeoutPath);
+      app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=stop-timeout', timeoutPath ]);
+      // app.debug();
+      app.expect('code', 0);
+
+      yield sleep(waitTime);
+
+      assert(app.stderr === '');
+      assert(app.stdout.match(/http:\/\/127\.0\.0\.1:7001/));
+      const result = yield httpclient.request('http://127.0.0.1:7001');
+      assert(result.data.toString() === 'hi, egg');
+    });
+
+    afterEach(function* () {
+      app.proc.kill('SIGTERM');
+      yield utils.cleanup(timeoutPath);
+    });
+
+    it('should stop error without timeout', function* () {
+      killer = coffee.fork(eggBin, [ 'stop' ], { cwd: timeoutPath });
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      assert(!app.stdout.includes('exist by env'));
+
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.match(/app_worker#\d+:\d+ disconnect/));
+        assert(app.stdout.match(/don't fork, because worker:\d+ will be kill soon/));
+      }
+
+      assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
+      assert(killer.stdout.match(/got master pid \["\d+\"]/i));
+    });
+
+    it('should stop success', function* () {
+      killer = coffee.fork(eggBin, [ 'stop', '--timeout=10s' ], { cwd: timeoutPath });
+      killer.debug();
+      killer.expect('code', 0);
+
+      // yield killer.end();
+      yield sleep(waitTime);
+
+      // make sure is kill not auto exist
+      assert(!app.stdout.includes('exist by env'));
+
+      // no way to handle the SIGTERM signal in windows ?
+      if (!isWin) {
+        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] exit with code:0'));
+        assert(app.stdout.includes('[agent_worker] exit with code:0'));
+      }
+
+      assert(killer.stdout.includes('[egg-scripts] stopping egg application'));
+      assert(killer.stdout.match(/got master pid \["\d+\"]/i));
     });
   });
 
