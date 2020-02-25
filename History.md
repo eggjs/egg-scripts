@@ -1,4 +1,10 @@
 
+2.13.0 / 2020-02-25
+==================
+
+**features**
+  * [[`c0ba739`](http://github.com/eggjs/egg-scripts/commit/c0ba73900642e488b0e6306ea028ef547ceedfae)] - feat: support stop timeout (#43) (hui <<kangpangpang@gmail.com>>)
+
 2.12.0 / 2019-12-16
 ==================
 
