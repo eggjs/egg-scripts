@@ -1,4 +1,10 @@
 
+2.14.0 / 2021-06-11
+==================
+
+**features**
+  * [[`f0a342f`](http://github.com/eggjs/egg-scripts/commit/f0a342ffcd3ec1823eb2d42a9dd96c075cea3754)] - feat: --no-deprecation (#44) (TZ | 天猪 <<atian25@qq.com>>)
+
 2.13.0 / 2020-02-25
 ==================
 
