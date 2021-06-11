@@ -40,7 +40,7 @@ describe('test/ts.test.js', () => {
 
     it('--ts', function* () {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--ts', fixturePath ]);
-      // app.debug();
+      app.debug();
       app.expect('code', 0);
 
       yield sleep(waitTime);

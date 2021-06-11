@@ -44,12 +44,13 @@ describe('test/start.test.js', () => {
 
       it('should start', function* () {
         app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
-        // app.debug();
+        app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
 
         assert(app.stderr === '');
+        assert(!app.stdout.includes('DeprecationWarning:'));
         assert(app.stdout.includes('--title=egg-server-example'));
         assert(app.stdout.includes('"title":"egg-server-example"'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -59,14 +60,14 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'hi, egg');
       });
 
-      it('should get ready', function* () {
+      it.skip('should get ready', function* () {
         app = coffee.fork(path.join(__dirname, './fixtures/ipc-bin/start.js'), [], {
           env: {
             BASE_DIR: fixturePath,
             PATH: process.env.PATH,
           },
         });
-        // app.debug();
+        app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
