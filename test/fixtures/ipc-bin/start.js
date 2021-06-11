@@ -27,7 +27,8 @@ co(function* () {
       title: 'egg-server-example',
     },
     cwd: process.env.BASE_DIR,
-    execArgv: [],
+    // FIXME: overide run argv so execArgvObj is missing
+    // execArgv: [],
     env: {
       PATH: process.env.PATH,
     },

@@ -29,7 +29,7 @@
     "eslint": "^5.10.0",
     "eslint-config-egg": "^7.1.0",
     "mm": "^2.4.1",
-    "typescript": "^2.8.1",
+    "typescript": "^4",
     "urllib": "^2.31.3",
     "webstorm-disable-index": "^1.2.0"
   },
