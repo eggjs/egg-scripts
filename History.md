@@ -1,4 +1,10 @@
 
+2.15.0 / 2021-09-13
+==================
+
+**features**
+  * [[`fe179fd`](http://github.com/eggjs/egg-scripts/commit/fe179fda909cd7eb5b6497357202185a4ecf5ec6)] - feat: support pkgInfo.egg.require (#45) (TZ | 天猪 <<atian25@qq.com>>)
+
 2.14.0 / 2021-06-11
 ==================
 
