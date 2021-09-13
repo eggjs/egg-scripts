@@ -577,7 +577,11 @@ describe('test/start.test.js', () => {
         const exitEvent = awaitEvent(app.proc, 'exit');
         app.proc.kill('SIGTERM');
         const code = yield exitEvent;
-        assert(code === 0);
+        if (isWin) {
+          assert(code === null);
+        } else {
+          assert(code === 0);
+        }
       });
     });
   });
