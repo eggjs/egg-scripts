@@ -30,6 +30,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: update npm
+      run: npm i -g npm
+
     - name: Install Dependencies
       run: npm i -g npminstall && npminstall
 
