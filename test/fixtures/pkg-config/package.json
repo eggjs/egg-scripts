@@ -1,0 +1,9 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "egg": {
+    "require": [
+      "./inject.js"
+    ]
+  }
+}
