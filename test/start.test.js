@@ -381,6 +381,33 @@ describe('test/start.test.js', () => {
         exists = yield fs.exists(malicious);
         assert(!exists);
       });
+
+      describe('read pkgInfo', () => {
+        let app;
+        let fixturePath;
+
+        before(function* () {
+          fixturePath = path.join(__dirname, 'fixtures/pkg-config');
+          yield utils.cleanup(fixturePath);
+        });
+
+        after(function* () {
+          app.proc.kill('SIGTERM');
+          yield utils.cleanup(fixturePath);
+        });
+
+        it('should --require', function* () {
+          app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ], { cwd: fixturePath });
+          app.debug();
+          app.expect('code', 0);
+
+          yield sleep(waitTime);
+
+          assert(app.stderr === '');
+          assert(app.stdout.match(/@@@ inject relative js by pkgInfo/));
+          assert(app.stdout.match(/@@@ inject node_modules by pkgInfo/));
+        });
+      });
     });
 
     describe('--node', () => {
