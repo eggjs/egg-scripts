@@ -1,3 +1,3 @@
 'use strict';
 
-console.log('@@@ inject by pkgInfo');
+console.log('@@@ inject relative js by pkgInfo');
