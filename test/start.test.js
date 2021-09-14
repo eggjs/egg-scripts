@@ -45,7 +45,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should --require', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ], { cwd: fixturePath });
+        app = coffee.fork(eggBin, [ 'start', '--workers=1' ], { cwd: fixturePath });
         app.debug();
         app.expect('code', 0);
 
@@ -578,7 +578,11 @@ describe('test/start.test.js', () => {
         const exitEvent = awaitEvent(app.proc, 'exit');
         app.proc.kill('SIGTERM');
         const code = yield exitEvent;
-        assert(code === 0);
+        if (isWin) {
+          assert(code === null);
+        } else {
+          assert(code === 0);
+        }
       });
     });
   });
