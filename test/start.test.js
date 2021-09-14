@@ -488,7 +488,7 @@ describe('test/start.test.js', () => {
       });
 
       it('should --require', function* () {
-        app = coffee.fork(eggBin, ['start', '--workers=1', fixturePath], { cwd: fixturePath });
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ], { cwd: fixturePath });
         app.debug();
         app.expect('code', 0);
 
@@ -496,7 +496,7 @@ describe('test/start.test.js', () => {
 
         assert(app.stderr === '');
         assert(app.stdout.match(/@@@ inject relative js by pkgInfo/));
-        assert(app.stdout.match(/@@@ inject node_module by pkgInfo/));
+        assert(app.stdout.match(/@@@ inject node_modules by pkgInfo/));
       });
     });
 
