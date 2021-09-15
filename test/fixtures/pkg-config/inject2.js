@@ -1,3 +1,3 @@
 'use strict';
 
-console.log('@@@ inject by cli');
+console.log('@@@ inject script2');

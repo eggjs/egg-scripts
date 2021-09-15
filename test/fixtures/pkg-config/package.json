@@ -6,7 +6,7 @@
   },
   "eggScriptsConfig": {
     "require": [
-      "./inject.js",
+      "./inject1.js",
       "inject"
     ]
   }
