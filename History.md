@@ -1,4 +1,13 @@
 
+2.15.1 / 2021-09-15
+==================
+
+**features**
+  * [[`1a7f09c`](http://github.com/eggjs/egg-scripts/commit/1a7f09c707becaca42522ee415da0fe5961a6ad5)] - feat: support pkgInfo.eggScriptsConfig.require (#47) (hyj1991 <<yeekwanvong@gmail.com>>)
+
+**others**
+  * [[`a68ac67`](http://github.com/eggjs/egg-scripts/commit/a68ac679b0eee4eff19c9e5d40ca80409ddf02eb)] - Revert "feat: support pkgInfo.egg.require (#45)" (#48) (hyj1991 <<yeekwanvong@gmail.com>>)
+
 2.15.0 / 2021-09-13
 ==================
 
