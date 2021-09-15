@@ -18,7 +18,7 @@ describe('test/stop.test.js', () => {
   const timeoutPath = path.join(__dirname, 'fixtures/stop-timeout');
   const homePath = path.join(__dirname, 'fixtures/home');
   const logDir = path.join(homePath, 'logs');
-  const waitTime = '10s';
+  const waitTime = '15s';
 
   before(function* () {
     yield mkdirp(homePath);
@@ -271,7 +271,7 @@ describe('test/stop.test.js', () => {
   describe('stop all with timeout', function() {
     let app;
     let killer;
-    this.timeout(12000);
+    this.timeout(17000);
     beforeEach(function* () {
       yield utils.cleanup(timeoutPath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=stop-timeout', timeoutPath ]);

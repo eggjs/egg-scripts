@@ -30,6 +30,34 @@ describe('test/start.test.js', () => {
   afterEach(mm.restore);
 
   describe('start without daemon', () => {
+    describe('read pkgInfo', () => {
+      let app;
+      let fixturePath;
+
+      before(function* () {
+        fixturePath = path.join(__dirname, 'fixtures/pkg-config');
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should --require', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', '--require=./inject2' ], { cwd: fixturePath });
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/@@@ inject relative js by pkgInfo/));
+        assert(app.stdout.match(/@@@ inject node_modules by pkgInfo/));
+        assert(app.stdout.match(/@@@ inject by cli/));
+      });
+    });
+
     describe('full path', () => {
       let app;
 
@@ -551,7 +579,11 @@ describe('test/start.test.js', () => {
         const exitEvent = awaitEvent(app.proc, 'exit');
         app.proc.kill('SIGTERM');
         const code = yield exitEvent;
-        assert(code === 0);
+        if (isWin) {
+          assert(code === null);
+        } else {
+          assert(code === 0);
+        }
       });
     });
   });
