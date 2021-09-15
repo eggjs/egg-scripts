@@ -45,16 +45,27 @@ describe('test/start.test.js', () => {
       });
 
       it('should --require', function* () {
-        app = coffee.fork(eggBin, [ 'start', '--workers=1', '--require=./inject2' ], { cwd: fixturePath });
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', '--require=./inject2.js' ], { cwd: fixturePath });
         app.debug();
         app.expect('code', 0);
 
         yield sleep(waitTime);
 
         assert(app.stderr === '');
-        assert(app.stdout.match(/@@@ inject relative js by pkgInfo/));
-        assert(app.stdout.match(/@@@ inject node_modules by pkgInfo/));
-        assert(app.stdout.match(/@@@ inject by cli/));
+        assert(app.stdout.match(/@@@ inject script/));
+        assert(app.stdout.match(/@@@ inject script1/));
+        assert(app.stdout.match(/@@@ inject script2/));
+      });
+
+      it('inject incorrect script', function* () {
+        const script = './inject3.js';
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', `--require=${script}` ], { cwd: fixturePath });
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr.includes(`Cannot find module '${path.join(fixturePath, script)}'`));
       });
     });
 
