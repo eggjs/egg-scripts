@@ -69,6 +69,30 @@ describe('test/start.test.js', () => {
       });
     });
 
+    describe('sourcemap default value should respect eggScriptConfig', () => {
+      let app;
+      let fixturePath;
+
+      before(function* () {
+        fixturePath = path.join(__dirname, 'fixtures/pkg-config-sourcemap');
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should not enable sourcemap-support', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=1' ], { cwd: fixturePath });
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+        assert(!/--require .*\/node_modules\/.*source-map-support/.test(app.stdout));
+      });
+    });
+
     describe('full path', () => {
       let app;
 
