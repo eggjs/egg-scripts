@@ -1,4 +1,13 @@
 
+2.15.2 / 2021-11-17
+==================
+
+**fixes**
+  * [[`b122d86`](http://github.com/eggjs/egg-scripts/commit/b122d86d300df4018291d8f8d8e98ab813048f67)] - fix: sourcemap default value should respect eggScriptConfig (#50) (killa <<killa123@126.com>>)
+
+**others**
+  * [[`78c3284`](http://github.com/eggjs/egg-scripts/commit/78c3284cb68748f4487141f5481d6e44288c9e47)] - test: case for injecting incorrect script (#49) (hyj1991 <<yeekwanvong@gmail.com>>)
+
 2.15.1 / 2021-09-15
 ==================
 

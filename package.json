@@ -1,6 +1,6 @@
 {
   "name": "egg-scripts",
-  "version": "2.15.1",
+  "version": "2.15.2",
   "description": "deploy tool for egg project",
   "main": "index.js",
   "bin": {
