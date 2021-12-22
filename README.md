@@ -66,8 +66,9 @@ Stop egg gracefull.
 **Note:** if exec without `--title`, it will kill all egg process.
 
 ```bash
-# stop egg
-$ eggctl stop [--title=example]
+$ eggctl stop [options]
+# Usage
+# eggctl stop --title=example
 ```
 
 - **Options**
