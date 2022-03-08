@@ -1,6 +1,6 @@
 {
   "name": "egg-scripts",
-  "version": "2.15.2",
+  "version": "2.15.3",
   "description": "deploy tool for egg project",
   "main": "index.js",
   "bin": {
@@ -28,6 +28,7 @@
     "egg-bin": "^4.9.0",
     "eslint": "^5.10.0",
     "eslint-config-egg": "^7.1.0",
+    "git-contributor": "^1.0.10",
     "mm": "^2.4.1",
     "typescript": "^4",
     "urllib": "^2.31.3",
@@ -37,6 +38,7 @@
     "node": ">=6.0.0"
   },
   "scripts": {
+    "contributor": "git-contributor",
     "pkgfiles": "egg-bin pkgfiles",
     "test": "npm run lint -- --fix && npm run pkgfiles && npm run test-local",
     "test-local": "egg-bin test",

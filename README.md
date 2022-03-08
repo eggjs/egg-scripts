@@ -97,3 +97,15 @@ Please open an issue [here](https://github.com/eggjs/egg/issues?q=is%3Aissue+is%
 
 [MIT](LICENSE)
 
+<!-- GITCONTRIBUTOR_START -->
+
+## Contributors
+
+|[<img src="https://avatars.githubusercontent.com/u/227713?v=4" width="100px;"/><br/><sub><b>atian25</b></sub>](https://github.com/atian25)<br/>|[<img src="https://avatars.githubusercontent.com/u/360661?v=4" width="100px;"/><br/><sub><b>popomore</b></sub>](https://github.com/popomore)<br/>|[<img src="https://avatars.githubusercontent.com/u/156269?v=4" width="100px;"/><br/><sub><b>fengmk2</b></sub>](https://github.com/fengmk2)<br/>|[<img src="https://avatars.githubusercontent.com/u/985607?v=4" width="100px;"/><br/><sub><b>dead-horse</b></sub>](https://github.com/dead-horse)<br/>|[<img src="https://avatars.githubusercontent.com/u/2842176?v=4" width="100px;"/><br/><sub><b>XadillaX</b></sub>](https://github.com/XadillaX)<br/>|[<img src="https://avatars.githubusercontent.com/u/19908330?v=4" width="100px;"/><br/><sub><b>hyj1991</b></sub>](https://github.com/hyj1991)<br/>|
+| :---: | :---: | :---: | :---: | :---: | :---: |
+|[<img src="https://avatars.githubusercontent.com/u/6897780?v=4" width="100px;"/><br/><sub><b>killagu</b></sub>](https://github.com/killagu)<br/>|[<img src="https://avatars.githubusercontent.com/u/17738556?v=4" width="100px;"/><br/><sub><b>BaffinLee</b></sub>](https://github.com/BaffinLee)<br/>|[<img src="https://avatars.githubusercontent.com/u/546535?v=4" width="100px;"/><br/><sub><b>leoner</b></sub>](https://github.com/leoner)<br/>|[<img src="https://avatars.githubusercontent.com/u/4994682?v=4" width="100px;"/><br/><sub><b>plusmancn</b></sub>](https://github.com/plusmancn)<br/>|[<img src="https://avatars.githubusercontent.com/u/19830601?v=4" width="100px;"/><br/><sub><b>shuidian</b></sub>](https://github.com/shuidian)<br/>|[<img src="https://avatars.githubusercontent.com/u/24246985?v=4" width="100px;"/><br/><sub><b>zhennann</b></sub>](https://github.com/zhennann)<br/>|
+[<img src="https://avatars.githubusercontent.com/u/8005864?v=4" width="100px;"/><br/><sub><b>liyanlong</b></sub>](https://github.com/liyanlong)<br/>
+
+This project follows the git-contributor [spec](https://github.com/xudafeng/git-contributor), auto updated at `Tue Mar 08 2022 09:52:13 GMT+0800`.
+
+<!-- GITCONTRIBUTOR_END -->

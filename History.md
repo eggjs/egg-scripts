@@ -1,4 +1,13 @@
 
+2.15.3 / 2022-03-08
+==================
+
+**fixes**
+  * [[`ef5496d`](http://github.com/eggjs/egg-scripts/commit/ef5496d1838a508a859cd5d77886098d7de8fec5)] - fix: ps-cmd result may be truncated (#52) (W <<wj342234130@gmail.com>>)
+
+**others**
+  * [[`be89f9d`](http://github.com/eggjs/egg-scripts/commit/be89f9d6bb88810ffa3237deab9e4e0d9c4000c2)] - docs(doc): 修改readme文档中的stop脚本处的描述，并增加示例. (#51) (shuidian <<18842643145@163.com>>)
+
 2.15.2 / 2021-11-17
 ==================
 
