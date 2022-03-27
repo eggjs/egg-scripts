@@ -1,4 +1,10 @@
 
+2.16.0 / 2022-03-27
+==================
+
+**features**
+  * [[`bb1ba0a`](http://github.com/eggjs/egg-scripts/commit/bb1ba0a665cab9530639d98f38b76c3c72176f76)] - feat: --trace-warnings (#53) (mansonchor.github.com <<mansonchor1987@gmail.com>>)
+
 2.15.3 / 2022-03-08
 ==================
 
