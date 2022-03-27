@@ -123,6 +123,18 @@ describe('test/start.test.js', () => {
         assert(result.data.toString() === 'hi, egg');
       });
 
+      it('should start --trace-warnings work', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', path.join(__dirname, 'fixtures/trace-warnings') ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr.includes('MaxListenersExceededWarning:'));
+        assert(app.stderr.includes('app.js:10:9')); // should had trace
+        assert(!app.stdout.includes('DeprecationWarning:'));
+      });
+
       it.skip('should get ready', function* () {
         app = coffee.fork(path.join(__dirname, './fixtures/ipc-bin/start.js'), [], {
           env: {
