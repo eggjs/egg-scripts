@@ -131,7 +131,7 @@ describe('test/start.test.js', () => {
         yield sleep(waitTime);
 
         assert(app.stderr.includes('MaxListenersExceededWarning:'));
-        assert(app.stderr.includes('app.js:13:9')); // should had trace
+        assert(app.stderr.includes('app.js:10:9')); // should had trace
         assert(!app.stdout.includes('DeprecationWarning:'));
       });
 
