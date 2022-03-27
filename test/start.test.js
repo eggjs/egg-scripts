@@ -112,8 +112,7 @@ describe('test/start.test.js', () => {
 
         yield sleep(waitTime);
 
-        assert(app.stderr.includes('MaxListenersExceededWarning:'));
-        assert(app.stderr.includes('app.js:13:9')); // should had trace
+        assert(app.stderr === '');
         assert(!app.stdout.includes('DeprecationWarning:'));
         assert(app.stdout.includes('--title=egg-server-example'));
         assert(app.stdout.includes('"title":"egg-server-example"'));
@@ -122,6 +121,17 @@ describe('test/start.test.js', () => {
         assert(!app.stdout.includes('app_worker#3:'));
         const result = yield httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
+      });
+
+      it('should start --trace-warnings work', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', path.join(__dirname, 'fixtures/trace-warnings') ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr.includes('MaxListenersExceededWarning:'));
+        assert(app.stderr.includes('app.js:13:9')); // should had trace
       });
 
       it.skip('should get ready', function* () {
