@@ -64,7 +64,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
@@ -106,7 +106,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(stdout.includes('[master] exit with code:0'));
         assert(stdout.includes('[app_worker] exit with code:0'));
       }
@@ -191,7 +191,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
@@ -248,7 +248,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[app_worker] exit with code:0'));
         // assert(app.stdout.includes('[agent_worker] exit with code:0'));
@@ -261,7 +261,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app2.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app2.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app2.stdout.includes('[master] exit with code:0'));
         assert(app2.stdout.includes('[app_worker] exit with code:0'));
       }
@@ -275,7 +275,7 @@ describe('test/stop.test.js', () => {
     beforeEach(function* () {
       yield utils.cleanup(timeoutPath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=stop-timeout', timeoutPath ]);
-      // app.debug();
+      app.debug();
       app.expect('code', 0);
 
       yield sleep(waitTime);
@@ -304,7 +304,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app.stdout.match(/app_worker#\d+:\d+ disconnect/));
         assert(app.stdout.match(/don't fork, because worker:\d+ will be kill soon/));
       }
@@ -326,7 +326,7 @@ describe('test/stop.test.js', () => {
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
-        assert(app.stdout.includes('[master] receive signal SIGTERM, closing'));
+        assert(app.stdout.includes('[master] master is killed by signal SIGTERM, closing'));
         assert(app.stdout.includes('[master] exit with code:0'));
         assert(app.stdout.includes('[agent_worker] exit with code:0'));
       }
