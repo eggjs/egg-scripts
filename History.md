@@ -1,4 +1,10 @@
 
+2.17.0 / 2022-04-28
+==================
+
+**features**
+  * [[`47f8e82`](http://github.com/eggjs/egg-scripts/commit/47f8e823e01b74028bf8dee7123fc3f9469fb3b6)] - feat: eggScriptsConfig support node-options (#54) (TZ | 天猪 <<atian25@qq.com>>)
+
 2.16.0 / 2022-03-27
 ==================
 
