@@ -548,6 +548,32 @@ describe('test/start.test.js', () => {
       });
     });
 
+    describe('read eggScriptsConfig', () => {
+      let app;
+      let fixturePath;
+
+      before(function* () {
+        fixturePath = path.join(__dirname, 'fixtures/egg-scripts-node-options');
+        yield utils.cleanup(fixturePath);
+      });
+
+      after(function* () {
+        app.proc.kill('SIGTERM');
+        yield utils.cleanup(fixturePath);
+      });
+
+      it('should start', function* () {
+        app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ]);
+        app.debug();
+        app.expect('code', 0);
+
+        yield sleep(waitTime);
+
+        assert(app.stderr === '');
+        assert(app.stdout.match(/maxHeaderSize: 20000/));
+      });
+    });
+
     describe('subDir as baseDir', () => {
       let app;
       const rootDir = path.join(__dirname, '..');

@@ -79,11 +79,13 @@ $ eggctl stop [options]
 
 In addition to the command line specification, options can also be specified in `package.json`. However, the command line designation takes precedence.
 
-```json
+```js
 {
   "eggScriptsConfig": {
     "port": 1234,
-    "ignore-stderr": true
+    "ignore-stderr": true,
+    // will pass as `node --max-http-header-size=20000`
+    "node-options--max-http-header-size": "20000"
   }
 }
 ```
