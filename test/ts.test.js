@@ -26,56 +26,56 @@ describe('test/ts.test.js', () => {
 
   describe('should display correct stack traces', () => {
     let app;
-    beforeEach(function* () {
+    beforeEach(async function() {
       fixturePath = path.join(__dirname, 'fixtures/ts');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
       const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app && app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
     });
 
-    it('--ts', function* () {
+    it('--ts', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--ts', fixturePath ]);
       app.debug();
       app.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
+      const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
-    it('--typescript', function* () {
+    it('--typescript', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--typescript', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
+      const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
 
-    it('--sourcemap', function* () {
+    it('--sourcemap', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', '--sourcemap', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
+      const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });
@@ -83,28 +83,28 @@ describe('test/ts.test.js', () => {
 
   describe('pkg.egg.typescript', () => {
     let app;
-    beforeEach(function* () {
+    beforeEach(async function() {
       fixturePath = path.join(__dirname, 'fixtures/ts-pkg');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
       const result = cp.spawnSync('npm', [ 'run', isWin ? 'windows-build' : 'build' ], { cwd: fixturePath, shell: isWin });
       assert(!result.stderr.toString());
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app && app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
     });
 
-    it('should got correct stack', function* () {
+    it('should got correct stack', async function() {
       app = coffee.fork(eggBin, [ 'start', '--workers=1', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
+      const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
       assert(result.data.stack.includes(path.normalize('app/controller/home.ts:6:13')));
     });

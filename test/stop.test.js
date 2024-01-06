@@ -20,11 +20,11 @@ describe('test/stop.test.js', () => {
   const logDir = path.join(homePath, 'logs');
   const waitTime = '15s';
 
-  before(function* () {
-    yield mkdirp(homePath);
+  before(async function() {
+    await mkdirp(homePath);
   });
-  after(function* () {
-    yield rimraf(homePath);
+  after(async function() {
+    await rimraf(homePath);
   });
   beforeEach(() => mm(process.env, 'MOCK_HOME_DIR', homePath));
   afterEach(() => mm.restore);
@@ -33,31 +33,31 @@ describe('test/stop.test.js', () => {
     let app;
     let killer;
 
-    beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
+    beforeEach(async function() {
+      await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
     });
 
-    it('should stop', function* () {
+    it('should stop', async function() {
       killer = coffee.fork(eggBin, [ 'stop', fixturePath ]);
       killer.debug();
       killer.expect('code', 0);
 
-      // yield killer.end();
-      yield sleep(waitTime);
+      // await killer.end();
+      await sleep(waitTime);
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
@@ -76,33 +76,33 @@ describe('test/stop.test.js', () => {
   });
 
   describe('stop with daemon', () => {
-    beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
-      yield rimraf(logDir);
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ])
+    beforeEach(async function() {
+      await utils.cleanup(fixturePath);
+      await rimraf(logDir);
+      await coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2', fixturePath ])
         .debug()
         .expect('code', 0)
         .end();
 
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
-    afterEach(function* () {
-      yield utils.cleanup(fixturePath);
+    afterEach(async function() {
+      await utils.cleanup(fixturePath);
     });
 
-    it('should stop', function* () {
-      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+    it('should stop', async function() {
+      await coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application/)
         .expect('stdout', /got master pid \["\d+\"\]/i)
         .expect('code', 0)
         .end();
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       // master log
-      const stdout = yield fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
+      const stdout = await fs.readFile(path.join(logDir, 'master-stdout.log'), 'utf-8');
 
       // no way to handle the SIGTERM signal in windows ?
       if (!isWin) {
@@ -111,7 +111,7 @@ describe('test/stop.test.js', () => {
         assert(stdout.includes('[app_worker] exit with code:0'));
       }
 
-      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+      await coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
         .expect('stderr', /can't detect any running egg process/)
         .expect('code', 0)
@@ -120,9 +120,9 @@ describe('test/stop.test.js', () => {
   });
 
   describe('stop with not exist', () => {
-    it('should work', function* () {
-      yield utils.cleanup(fixturePath);
-      yield coffee.fork(eggBin, [ 'stop', fixturePath ])
+    it('should work', async function() {
+      await utils.cleanup(fixturePath);
+      await coffee.fork(eggBin, [ 'stop', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application/)
         .expect('stderr', /can't detect any running egg process/)
@@ -135,27 +135,27 @@ describe('test/stop.test.js', () => {
     let app;
     let killer;
 
-    beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
+    beforeEach(async function() {
+      await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
     });
 
-    it('shoud stop only if the title matches exactly', function* () {
+    it('shoud stop only if the title matches exactly', async function() {
       // Because of'exmaple'.inclues('exmap') === true，if egg-scripts <= 2.1.0 and you run `.. stop --title=exmap`，the process with 'title:example' will also be killed unexpectedly
-      yield coffee.fork(eggBin, [ 'stop', '--title=examp', fixturePath ])
+      await coffee.fork(eggBin, [ 'stop', '--title=examp', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application with --title=examp/)
         .expect('stderr', /can't detect any running egg process/)
@@ -163,7 +163,7 @@ describe('test/stop.test.js', () => {
         .end();
 
       // stop only if the title matches exactly
-      yield coffee.fork(eggBin, [ 'stop', '--title=example', fixturePath ])
+      await coffee.fork(eggBin, [ 'stop', '--title=example', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application with --title=example/)
         .expect('stdout', /\[egg-scripts\] got master pid \[/)
@@ -171,8 +171,8 @@ describe('test/stop.test.js', () => {
         .end();
     });
 
-    it('should stop', function* () {
-      yield coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
+    it('should stop', async function() {
+      await coffee.fork(eggBin, [ 'stop', '--title=random', fixturePath ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application with --title=random/)
         .expect('stderr', /can't detect any running egg process/)
@@ -183,8 +183,8 @@ describe('test/stop.test.js', () => {
       killer.debug();
       killer.expect('code', 0);
 
-      // yield killer.end();
-      yield sleep(waitTime);
+      // await killer.end();
+      await sleep(waitTime);
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
@@ -207,8 +207,8 @@ describe('test/stop.test.js', () => {
     let app2;
     let killer;
 
-    beforeEach(function* () {
-      yield utils.cleanup(fixturePath);
+    beforeEach(async function() {
+      await utils.cleanup(fixturePath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=example', fixturePath ]);
       // app.debug();
       app.expect('code', 0);
@@ -216,32 +216,32 @@ describe('test/stop.test.js', () => {
       app2 = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=test', '--port=7002', fixturePath ]);
       app2.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
 
       assert(app2.stderr === '');
       assert(app2.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
-      const result2 = yield httpclient.request('http://127.0.0.1:7002');
+      const result2 = await httpclient.request('http://127.0.0.1:7002');
       assert(result2.data.toString() === 'hi, egg');
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
       app2.proc.kill('SIGTERM');
-      yield utils.cleanup(fixturePath);
+      await utils.cleanup(fixturePath);
     });
 
-    it('should stop', function* () {
+    it('should stop', async function() {
       killer = coffee.fork(eggBin, [ 'stop' ], { cwd: fixturePath });
       killer.debug();
       killer.expect('code', 0);
 
-      // yield killer.end();
-      yield sleep(waitTime);
+      // await killer.end();
+      await sleep(waitTime);
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
@@ -272,32 +272,32 @@ describe('test/stop.test.js', () => {
     let app;
     let killer;
     this.timeout(17000);
-    beforeEach(function* () {
-      yield utils.cleanup(timeoutPath);
+    beforeEach(async function() {
+      await utils.cleanup(timeoutPath);
       app = coffee.fork(eggBin, [ 'start', '--workers=2', '--title=stop-timeout', timeoutPath ]);
       app.debug();
       app.expect('code', 0);
 
-      yield sleep(waitTime);
+      await sleep(waitTime);
 
       assert(app.stderr === '');
       assert(app.stdout.match(/http:\/\/127\.0\.0\.1:7001/));
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
 
-    afterEach(function* () {
+    afterEach(async function() {
       app.proc.kill('SIGTERM');
-      yield utils.cleanup(timeoutPath);
+      await utils.cleanup(timeoutPath);
     });
 
-    it('should stop error without timeout', function* () {
+    it('should stop error without timeout', async function() {
       killer = coffee.fork(eggBin, [ 'stop' ], { cwd: timeoutPath });
       killer.debug();
       killer.expect('code', 0);
 
-      // yield killer.end();
-      yield sleep(waitTime);
+      // await killer.end();
+      await sleep(waitTime);
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
@@ -313,13 +313,13 @@ describe('test/stop.test.js', () => {
       assert(killer.stdout.match(/got master pid \["\d+\"]/i));
     });
 
-    it('should stop success', function* () {
+    it('should stop success', async function() {
       killer = coffee.fork(eggBin, [ 'stop', '--timeout=10s' ], { cwd: timeoutPath });
       killer.debug();
       killer.expect('code', 0);
 
-      // yield killer.end();
-      yield sleep(waitTime);
+      // await killer.end();
+      await sleep(waitTime);
 
       // make sure is kill not auto exist
       assert(!app.stdout.includes('exist by env'));
@@ -339,10 +339,10 @@ describe('test/stop.test.js', () => {
   describe('stop with symlink', () => {
     const baseDir = path.join(__dirname, 'fixtures/tmp');
 
-    beforeEach(function* () {
+    beforeEach(async function() {
       // if we can't create a symlink, skip the test
       try {
-        yield fs.symlink(fixturePath, baseDir, 'dir');
+        await fs.symlink(fixturePath, baseDir, 'dir');
       } catch (err) {
         // may get Error: EPERM: operation not permitted on windows
         console.log(`test skiped, can't create symlink: ${err}`);
@@ -352,28 +352,28 @@ describe('test/stop.test.js', () => {
       // *unix get the real path of symlink, but windows wouldn't
       const appPathInRegexp = isWin ? baseDir.replace(/\\/g, '\\\\') : fixturePath;
 
-      yield utils.cleanup(fixturePath);
-      yield rimraf(logDir);
-      yield coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2' ], { cwd: baseDir })
+      await utils.cleanup(fixturePath);
+      await rimraf(logDir);
+      await coffee.fork(eggBin, [ 'start', '--daemon', '--workers=2' ], { cwd: baseDir })
         .debug()
         .expect('stdout', new RegExp(`Starting custom-framework application at ${appPathInRegexp}`))
         .expect('code', 0)
         .end();
 
-      yield rimraf(baseDir);
-      const result = yield httpclient.request('http://127.0.0.1:7001');
+      await rimraf(baseDir);
+      const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
     });
-    afterEach(function* () {
-      yield utils.cleanup(fixturePath);
-      yield rimraf(baseDir);
+    afterEach(async function() {
+      await utils.cleanup(fixturePath);
+      await rimraf(baseDir);
     });
 
-    it('should stop', function* () {
-      yield rimraf(baseDir);
-      yield fs.symlink(path.join(__dirname, 'fixtures/status'), baseDir);
+    it('should stop', async function() {
+      await rimraf(baseDir);
+      await fs.symlink(path.join(__dirname, 'fixtures/status'), baseDir);
 
-      yield coffee.fork(eggBin, [ 'stop', baseDir ])
+      await coffee.fork(eggBin, [ 'stop', baseDir ])
         .debug()
         .expect('stdout', /\[egg-scripts] stopping egg application/)
         .expect('stdout', /got master pid \["\d+\"\]/i)

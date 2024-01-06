@@ -2,7 +2,7 @@
 
 const sleep = require('mz-modules/sleep');
 module.exports = app => {
-  app.beforeClose(function* () {
-    yield sleep(6000);
+  app.beforeClose(async function() {
+    await sleep(6000);
   });
 };
