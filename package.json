@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "await-event": "^2.1.0",
-    "common-bin": "^2.8.0",
+    "common-bin": "^3.0.1",
     "debug": "^4.1.0",
     "egg-utils": "^2.4.1",
     "moment": "^2.23.0",
@@ -36,7 +36,7 @@
     "node": ">=6.0.0"
   },
   "ci": {
-    "version": "14, 16, 18"
+    "version": "16, 18, 20"
   },
   "scripts": {
     "contributor": "git-contributor",
