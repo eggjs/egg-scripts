@@ -28,7 +28,7 @@
     "eslint-config-egg": "13",
     "mm": "^3.2.1",
     "typescript": "^4.9.4",
-    "urllib": "4"
+    "urllib": "2"
   },
   "engines": {
     "node": ">=16.0.0"
