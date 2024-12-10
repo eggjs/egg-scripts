@@ -148,7 +148,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.includes('READY!!!'));
         assert(app.stdout.includes('--title=egg-server-example'));
         assert(app.stdout.includes('"title":"egg-server-example"'));
@@ -201,7 +201,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = await httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
@@ -227,7 +227,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = await httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, egg');
@@ -253,7 +253,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
         const result = await httpclient.request('http://127.0.0.1:7001');
         assert(result.data.toString() === 'hi, yadan');
@@ -279,7 +279,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.includes('--title=egg-test'));
         assert(app.stdout.includes('"title":"egg-test"'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -309,7 +309,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
         const result = await httpclient.request('http://127.0.0.1:7002');
         assert(result.data.toString() === 'hi, egg');
@@ -335,7 +335,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
         const result = await httpclient.request('http://127.0.0.1:7002');
         assert(result.data.toString() === 'hi, egg');
@@ -361,7 +361,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
         const result = await httpclient.request('http://127.0.0.1:7001/env');
         assert(result.data.toString() === 'pre, true');
@@ -388,7 +388,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.includes('## EGG_SERVER_ENV is not pass'));
         assert(app.stdout.includes('## CUSTOM_ENV: pre'));
         assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
@@ -479,7 +479,7 @@ describe('test/start.test.js', () => {
 
           await sleep(waitTime);
 
-          assert(app.stderr === '');
+          assert.equal(app.stderr, '');
           assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
           const result = await httpclient.request('http://127.0.0.1:7001');
           assert(result.data.toString() === 'hi, yadan');
@@ -503,7 +503,7 @@ describe('test/start.test.js', () => {
 
           await sleep(waitTime);
 
-          assert(app.stderr === '');
+          assert.equal(app.stderr, '');
           assert(app.stdout.match(/yadan started on http:\/\/127\.0\.0\.1:7001/));
           const result = await httpclient.request('http://127.0.0.1:7001');
           assert(result.data.toString() === 'hi, yadan');
@@ -541,7 +541,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:8000/));
         assert(!app.stdout.includes('app_worker#3:'));
         const result = await httpclient.request('http://127.0.0.1:8000');
@@ -570,7 +570,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/maxHeaderSize: 20000/));
       });
     });
@@ -598,7 +598,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/SECURITY WARNING: Reverting CVE-2023-46809: Marvin attack on PKCS#1 padding/));
       });
     });
@@ -624,10 +624,10 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
         const result = await httpclient.request('http://127.0.0.1:7001');
-        assert(result.data.toString() === 'hi, egg');
+        assert.equal(result.data.toString(), 'hi, egg');
       });
     });
 
@@ -656,7 +656,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7002/));
         assert(!app.stdout.includes('app_worker#3:'));
         const result = await httpclient.request('http://127.0.0.1:7002');

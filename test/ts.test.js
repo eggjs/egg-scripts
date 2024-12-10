@@ -45,7 +45,7 @@ describe('test/ts.test.js', () => {
 
       await sleep(waitTime);
 
-      assert(app.stderr === '');
+      assert.equal(app.stderr, '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
@@ -59,7 +59,7 @@ describe('test/ts.test.js', () => {
 
       await sleep(waitTime);
 
-      assert(app.stderr === '');
+      assert.equal(app.stderr, '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
@@ -73,7 +73,7 @@ describe('test/ts.test.js', () => {
 
       await sleep(waitTime);
 
-      assert(app.stderr === '');
+      assert.equal(app.stderr, '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
@@ -102,7 +102,7 @@ describe('test/ts.test.js', () => {
 
       await sleep(waitTime);
 
-      assert(app.stderr === '');
+      assert.equal(app.stderr, '');
       assert(app.stdout.match(/egg started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001', { dataType: 'json' });
       // console.log(result.data);
