@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/eggjs/egg-scripts/compare/v3.0.1...v3.1.0) (2024-12-10)
+
+
+### Features
+
+* use runscript v2 ([#61](https://github.com/eggjs/egg-scripts/issues/61)) ([ebbb7f6](https://github.com/eggjs/egg-scripts/commit/ebbb7f60446a2bf5ec8eaac40c85c6224dd91c9d))
+
 ## [3.0.1](https://github.com/eggjs/egg-scripts/compare/v3.0.0...v3.0.1) (2024-05-11)
 
 
