@@ -1,5 +1,3 @@
-'use strict';
-
 const helper = require('../lib/helper');
 const sleep = require('mz-modules/sleep');
 const isWin = process.platform === 'win32';
@@ -38,4 +36,12 @@ exports.cleanup = async function(baseDir) {
 
     await sleep('5s');
   }
+};
+
+exports.replaceWeakRefMessage = function(stderr) {
+  // Using compatibility WeakRef and FinalizationRegistry\r\n
+  if (stderr.includes('Using compatibility WeakRef and FinalizationRegistry')) {
+    stderr = stderr.replace(/Using compatibility WeakRef and FinalizationRegistry[\r\n]*/g, '');
+  }
+  return stderr;
 };

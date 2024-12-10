@@ -40,7 +40,7 @@ describe('test/stop.test.js', () => {
       app.expect('code', 0);
       await sleep(waitTime);
 
-      assert.equal(app.stderr, '');
+      assert.equal(utils.replaceWeakRefMessage(app.stderr), '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
@@ -142,7 +142,7 @@ describe('test/stop.test.js', () => {
       app.expect('code', 0);
       await sleep(waitTime);
 
-      assert.equal(app.stderr, '');
+      assert.equal(utils.replaceWeakRefMessage(app.stderr), '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
@@ -218,12 +218,12 @@ describe('test/stop.test.js', () => {
 
       await sleep(waitTime);
 
-      assert.equal(app.stderr, '');
+      assert.equal(utils.replaceWeakRefMessage(app.stderr), '');
       assert(app.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
 
-      assert(app2.stderr === '');
+      assert.equal(utils.replaceWeakRefMessage(app2.stderr), '');
       assert(app2.stdout.match(/custom-framework started on http:\/\/127\.0\.0\.1:7002/));
       const result2 = await httpclient.request('http://127.0.0.1:7002');
       assert(result2.data.toString() === 'hi, egg');
@@ -280,7 +280,7 @@ describe('test/stop.test.js', () => {
 
       await sleep(waitTime);
 
-      assert.equal(app.stderr, '');
+      assert.equal(utils.replaceWeakRefMessage(app.stderr), '');
       assert(app.stdout.match(/http:\/\/127\.0\.0\.1:7001/));
       const result = await httpclient.request('http://127.0.0.1:7001');
       assert(result.data.toString() === 'hi, egg');
