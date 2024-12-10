@@ -10,3 +10,4 @@ test/fixtures/ts/app/controller/home.js
 test/fixtures/ts-pkg/app/controller/home.js
 !test/fixtures/**/node_modules
 package-lock.json
+.package-lock.json
