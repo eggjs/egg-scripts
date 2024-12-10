@@ -52,7 +52,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(app.stdout.match(/@@@ inject script/));
         assert(app.stdout.match(/@@@ inject script1/));
         assert(app.stdout.match(/@@@ inject script2/));
@@ -113,7 +113,7 @@ describe('test/start.test.js', () => {
 
         await sleep(waitTime);
 
-        assert(app.stderr === '');
+        assert.equal(app.stderr, '');
         assert(!app.stdout.includes('DeprecationWarning:'));
         assert(app.stdout.includes('--title=egg-server-example'));
         assert(app.stdout.includes('"title":"egg-server-example"'));
@@ -723,6 +723,7 @@ describe('test/start.test.js', () => {
 
       // should rotate log
       const fileList = await fs.readdir(logDir);
+      // console.log(fileList);
       assert(fileList.some(name => name.match(/master-stdout\.log\.\d+\.\d+/)));
       assert(fileList.some(name => name.match(/master-stderr\.log\.\d+\.\d+/)));
 
